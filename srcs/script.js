@@ -1,8 +1,8 @@
-const canvas = document.getElementById('gamecanvas');
-const game = canvas.getContext('2d');
-const ballRad = 10;
-const paddleHeight = 80;
-const paddleWidth = 25;
+let canvas = document.getElementById('gamecanvas');
+let game = canvas.getContext('2d');
+const ballRad = 5;
+const paddleHeight = 25;
+const paddleWidth = 5;
 const leftPaddle = {
 	x: 0,
 	y: canvas.height / 2 - paddleHeight / 2,
@@ -20,8 +20,8 @@ const rightPaddle = {
 };
 
 const ball = {
-	x: 300,
-	y: 200,
+	x: canvas.width / 2,
+	y: canvas.height / 2,
 	rad: ballRad,
 	dy: 0,
 	dx: 0
@@ -33,10 +33,10 @@ function draw() {
     leftPaddle.y = Math.max(0, Math.min(leftPaddle.y, canvas.height - leftPaddle.height));
     rightPaddle.y = Math.max(0, Math.min(rightPaddle.y, canvas.height - rightPaddle.height));
 
-    game.fillStyle = 'blue';
+    game.fillStyle = 'black';
     game.fillRect(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height);
 
-    game.fillStyle = 'red';
+    game.fillStyle = 'black';
     game.fillRect(rightPaddle.x, rightPaddle.y, rightPaddle.width, rightPaddle.height);
 
     game.beginPath();
@@ -44,6 +44,7 @@ function draw() {
     game.fillStyle = 'black';
     game.fill();
     game.closePath();
+    game.ImageSmoothingEnabled = true;
 	// const gradient = game.createRadialGradient(
     //     canvas.width / 2, canvas.height / 2, 0,
     //     canvas.width / 2, canvas.height / 2, Math.min(canvas.width, canvas.height) / 2
