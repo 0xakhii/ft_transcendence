@@ -1,15 +1,17 @@
 FROM debian:buster
 
-RUN apt update -y && apt upgrade -y ;\
-	apt install -y npm ;\
-	npm install --save three ;\
-	npm install --save-dev vite ;\
-	npm install --save-dev esbuild ;\
-	npm i --save-dev @types/three ;\
-	mkdir $HOME/ft_transcendence/
+RUN apt update -y && apt upgrade -y 
+RUN apt install -y npm curl
+RUN npm install -g npm@latest
 
-COPY ./srcs/* $HOME/ft_transcendence/
+RUN npm install --save three 
+RUN npm install --save-dev vite 
+RUN npm install --save-dev esbuild 
+RUN npm i --save-dev @types/three 
+
+RUN mkdir -p $HOME/ft_transcendence/srcs
+COPY ./* $HOME/ft_transcendence/srcs
 
 WORKDIR $HOME/ft_transcendence/srcs
 
-CMD ["npx", "vite", "--host"]
+CMD ["npx", "vite"] 
