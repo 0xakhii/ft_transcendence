@@ -32,27 +32,22 @@ function draw() {
     game.clearRect(0, 0, canvas.width, canvas.height);
     leftPaddle.y = Math.max(0, Math.min(leftPaddle.y, canvas.height - leftPaddle.height));
     rightPaddle.y = Math.max(0, Math.min(rightPaddle.y, canvas.height - rightPaddle.height));
-
+    
+    game.ImageSmoothingEnabled = true;
     game.fillStyle = 'black';
+    game.fillRect(0, 0, canvas.width, canvas.height);
+    
+    game.fillStyle = 'white';
     game.fillRect(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height);
 
-    game.fillStyle = 'black';
+    game.fillStyle = 'white';
     game.fillRect(rightPaddle.x, rightPaddle.y, rightPaddle.width, rightPaddle.height);
 
     game.beginPath();
     game.arc(ball.x, ball.y, ball.rad, 0, Math.PI * 2);
-    game.fillStyle = 'black';
+    game.fillStyle = 'white';
     game.fill();
     game.closePath();
-    game.ImageSmoothingEnabled = true;
-	// const gradient = game.createRadialGradient(
-    //     canvas.width / 2, canvas.height / 2, 0,
-    //     canvas.width / 2, canvas.height / 2, Math.min(canvas.width, canvas.height) / 2
-    // );
-    // gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
-    // gradient.addColorStop(1, 'rgba(0, 0, 0, 0.8)');
-    // game.fillStyle = gradient;
-    // game.fillRect(0, 0, canvas.width, canvas.height);
 }
 
 function update(){
@@ -93,10 +88,10 @@ function ballWallCollision(){
 
 function ballPaddleCollision(){
     if (ball.x - ball.rad < leftPaddle.x + leftPaddle.width && ball.y > leftPaddle.y && ball.y < leftPaddle.y + leftPaddle.height) {
-        ball.dx = -ball.dx + Math.random() % 10;
+        ball.dx = -ball.dx + Math.random() * 2;
     }
     if (ball.x + ball.rad > rightPaddle.x && ball.y > rightPaddle.y && ball.y < rightPaddle.y + rightPaddle.height) {
-        ball.dx = -ball.dx + Math.random() % 10;
+        ball.dx = -ball.dx + Math.random() * 2;
     }
 }
 
@@ -106,17 +101,37 @@ function scoreDisplay(){
     game.fillText(score.right, canvas.width / 2 + 10, 30);
 }
 
-function gameLoop(){
-	update();
-	draw();
+function gameOver(){
     scoreDisplay();
+    if (score.left === 11 || score.right === 11) {
+        if (score.left === 11) {
+            game.fillText('Player 1 wins', canvas.width / 2 - 50, canvas.height / 2);
+            return 1;
+        }
+        if (score.right === 11) {
+            game.fillText('Player 2 wins', canvas.width / 2 - 50, canvas.height / 2);
+            return 1;
+        }
+    }
+}
+
+function gameLoop(){
+    update();
+	draw();
     ballWallCollision();
     ballPaddleCollision();
     if (ball.dx === 0 && ball.dy === 0) {
         ballMove();
     }
-	requestAnimationFrame(gameLoop);
+    if (gameOver() === 1) {
+        score.left = 0;
+        score.right = 0;
+        resetBall();
+        return 0;
+    }
+    requestAnimationFrame(gameLoop);
 }
+
 document.addEventListener('keydown', keyDownHandler);
 document.addEventListener('keyup', keyUpHandler);
 
@@ -150,8 +165,7 @@ function keyDownHandler(event) {
 }
 
 
-function keyUpHandler(event)   
- {
+function keyUpHandler(event) {
     if (event.key === 'ArrowUp' || event.key === 'ArrowDown')
         rightPaddle.dy = 0;
     if (event.key === 'w' || event.key === 's')
