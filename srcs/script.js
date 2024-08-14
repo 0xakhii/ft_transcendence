@@ -65,14 +65,15 @@ function resetBall(){
 }
 
 function ballMove(){
-    ball.dx += Math.random() < 0.5 ? -2 : 2;
-    ball.dy += Math.random() < 0.5 ? -2 : 2;
+    ball.dx += Math.random() < 0.5 ? -0.5 : 0.5;
+    ball.dy += Math.random() < 0.5 ? -0.5 : 0.5;
 }
 let score = {
     right: 0,
     left: 0
 };
 function ballWallCollision(){
+    update();
     if (ball.y + ball.rad > canvas.height || ball.y - ball.rad < 0) {
         ball.dy = -ball.dy;
     }
@@ -87,6 +88,7 @@ function ballWallCollision(){
 }
 
 function ballPaddleCollision(){
+    update();
     if (ball.x - ball.rad < leftPaddle.x + leftPaddle.width && ball.y > leftPaddle.y && ball.y < leftPaddle.y + leftPaddle.height) {
         ball.dx = -ball.dx + Math.random() * 2;
     }
@@ -96,6 +98,7 @@ function ballPaddleCollision(){
 }
 
 function scoreDisplay(){
+    game.fillStyle = 'white';
     game.font = '20px Arial';
     game.fillText(score.left, canvas.width / 2 - 30, 30);
     game.fillText(score.right, canvas.width / 2 + 10, 30);
@@ -105,10 +108,12 @@ function gameOver(){
     scoreDisplay();
     if (score.left === 11 || score.right === 11) {
         if (score.left === 11) {
+            game.fillStyle = 'white';
             game.fillText('Player 1 wins', canvas.width / 2 - 50, canvas.height / 2);
             return 1;
         }
         if (score.right === 11) {
+            game.fillStyle = 'white';
             game.fillText('Player 2 wins', canvas.width / 2 - 50, canvas.height / 2);
             return 1;
         }
