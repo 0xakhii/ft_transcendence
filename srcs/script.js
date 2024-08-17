@@ -1,8 +1,10 @@
 let canvas = document.getElementById('gamecanvas');
 let game = canvas.getContext('2d');
-const ballRad = 5;
-const paddleHeight = 25;
-const paddleWidth = 5;
+canvas.width = window.innerWidth - 1;
+canvas.height = window.innerHeight - 4;
+const ballRad = 10;
+const paddleHeight = 100;
+const paddleWidth = 10;
 const leftPaddle = {
 	x: 0,
 	y: canvas.height / 2 - paddleHeight / 2,
@@ -65,8 +67,8 @@ function resetBall(){
 }
 
 function ballMove(){
-    ball.dx += Math.random() < 0.5 ? -0.5 : 0.5;
-    ball.dy += Math.random() < 0.5 ? -0.5 : 0.5;
+    ball.dx += Math.random() < 0.5 ? -1.5 : 1.5;
+    ball.dy += Math.random() < 0.5 ? -1.5 : 1.5;
 }
 let score = {
     right: 0,
@@ -74,26 +76,24 @@ let score = {
 };
 function ballWallCollision(){
     update();
-    if (ball.y + ball.rad > canvas.height || ball.y - ball.rad < 0) {
+    if (ball.y + ball.rad > canvas.height || ball.y - ball.rad < 0)
         ball.dy = -ball.dy;
-    }
     if (ball.x + ball.rad > canvas.width || ball.x - ball.rad < 0) {
-        if (ball.x + ball.rad > canvas.width) {
+        if (ball.x + ball.rad > canvas.width)
             score.left++;
-        } else {
+        else
             score.right++;
-        }
         resetBall();
     }
 }
 
 function ballPaddleCollision(){
     update();
-    if (ball.x - ball.rad < leftPaddle.x + leftPaddle.width && ball.y > leftPaddle.y && ball.y < leftPaddle.y + leftPaddle.height) {
-        ball.dx = -ball.dx + Math.random() * 2;
+    if (ball.y + ball.rad > leftPaddle.y && ball.y - ball.rad < leftPaddle.y + leftPaddle.height && ball.x - ball.rad < leftPaddle.x + leftPaddle.width) {
+        ball.dx = -ball.dx + Math.random() * 0.5;
     }
-    if (ball.x + ball.rad > rightPaddle.x && ball.y > rightPaddle.y && ball.y < rightPaddle.y + rightPaddle.height) {
-        ball.dx = -ball.dx + Math.random() * 2;
+    if (ball.y + ball.rad > rightPaddle.y && ball.y - ball.rad < rightPaddle.y + rightPaddle.height && ball.x + ball.rad > rightPaddle.x) {
+        ball.dx = -ball.dx + Math.random() * 0.5;
     }
 }
 
