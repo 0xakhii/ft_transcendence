@@ -2,22 +2,31 @@
   "hash": "39641a85",
   "configHash": "c2ac9d6b",
   "lockfileHash": "e3b0c442",
-  "browserHash": "29abcfac",
+  "browserHash": "4c081316",
   "optimized": {
     "three/addons/loaders/GLTFLoader.js": {
       "src": "../../../node_modules/three/examples/jsm/loaders/GLTFLoader.js",
       "file": "three_addons_loaders_GLTFLoader__js.js",
-      "fileHash": "c91a0d93",
+      "fileHash": "8a30159c",
       "needsInterop": false
     },
     "three": {
       "src": "../../../node_modules/three/build/three.module.js",
       "file": "three.js",
-      "fileHash": "f712687e",
+      "fileHash": "baf12663",
+      "needsInterop": false
+    },
+    "three/examples/jsm/loaders/GLTFLoader.js": {
+      "src": "../../../node_modules/three/examples/jsm/loaders/GLTFLoader.js",
+      "file": "three_examples_jsm_loaders_GLTFLoader__js.js",
+      "fileHash": "49633e2d",
       "needsInterop": false
     }
   },
   "chunks": {
+    "chunk-YNQK4YKB": {
+      "file": "chunk-YNQK4YKB.js"
+    },
     "chunk-23P7P7Z2": {
       "file": "chunk-23P7P7Z2.js"
     }

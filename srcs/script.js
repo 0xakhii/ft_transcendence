@@ -90,10 +90,10 @@ function ballWallCollision(){
 function ballPaddleCollision(){
     update();
     if (ball.y + ball.rad > leftPaddle.y && ball.y - ball.rad < leftPaddle.y + leftPaddle.height && ball.x - ball.rad < leftPaddle.x + leftPaddle.width) {
-        ball.dx = -ball.dx + Math.random() * 0.5;
+        ball.dx += -ball.dx + Math.random() * 0.5;
     }
     if (ball.y + ball.rad > rightPaddle.y && ball.y - ball.rad < rightPaddle.y + rightPaddle.height && ball.x + ball.rad > rightPaddle.x) {
-        ball.dx = -ball.dx + Math.random() * 0.5;
+        ball.dx += -ball.dx + Math.random() * 0.5;
     }
 }
 
