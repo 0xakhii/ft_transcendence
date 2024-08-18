@@ -1,10 +1,11 @@
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 2, 1000);
-
 const renderer = new THREE.WebGLRenderer();
+const controls = new OrbitControls(camera, renderer.domElement);
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
@@ -82,6 +83,7 @@ function paddleMove() {
 function animate() {
     paddleMove();
     renderer.render(scene, camera);
+    controls.update();
     requestAnimationFrame(animate);
 }
 renderer.setClearColor(0xF0EAD6);
