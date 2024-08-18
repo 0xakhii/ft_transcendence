@@ -13,18 +13,30 @@ const loader = new GLTFLoader();
 let table;
 loader.load('assets/table.glb', function (gltf) {
     table = gltf.scene;
-    scene.add(gltf.scene);
-    table.scale.set(10, 5, 5);
+    scene.add(table);
+    table.scale.set(15, 7, 10);
+    table.position.z = -10;
 }
 , undefined, function (error) {
     console.error(error);
 });
+let ball;
+loader.load('assets/ball.glb', function (gltf) {
+    ball = gltf.scene;
+    scene.add(ball);
+    // ball.scale.set(0.5, 0.5, 0.5);
+    // ball.position.y = 15;
+    // ball.position.z = 22;
+}, undefined, function (error) {
+    console.error(error);
+});
 
-let paddle;
+
+let paddle = new THREE.Object3D();
 loader.load('assets/paddle.glb', function (gltf) {
     paddle = gltf.scene;
-    scene.add(gltf.scene);
-    paddle.scale.set(0.5, 0.5, 0.5);
+    scene.add(paddle);
+    paddle.scale.set(2, 2, 2);
     paddle.position.y = 14;
     paddle.position.z = 22;
     paddle.position.x = 0;
@@ -35,27 +47,42 @@ loader.load('assets/paddle.glb', function (gltf) {
 });
 
 let mouseX = 0;
+let mouseZ = 0;
 function onMouseMove(event) {
     mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+    mouseZ = (event.clientY / window.innerHeight) * 2 - 1;
 }
 document.addEventListener('mousemove', onMouseMove);
 
-const light = new THREE.AmbientLight(0xffffff);
-scene.add(light);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+directionalLight.position.set(5, 10, 7.5);
+scene.add(directionalLight);
 
-camera.position.z = 25;
-camera.position.y = 15;
+camera.position.z = 30;
+camera.position.y = 20;
+camera.rotation.x = -Math.PI / 6;
+
+function paddleMove() {
+    paddle.position.x += mouseX * 5;
+    paddle.position.z += mouseZ * 5;
+    if (paddle.position.x > 25) {
+        paddle.position.x = 25;
+    }
+    if (paddle.position.x < -25) {
+        paddle.position.x = -25;
+    }
+    if (paddle.position.z > 25) {
+        paddle.position.z = 25;
+    }
+    if (paddle.position.z < -10) {
+        paddle.position.z = -10;
+    }
+}
 
 function animate() {
-    requestAnimationFrame(animate);
-    paddle.position.x = mouseX * 10;
-    if (paddle.position.x > 3.5) {
-        paddle.position.x = 3.5;
-    }
-    if (paddle.position.x < -3.5) {
-        paddle.position.x = -3.5;
-    }
+    paddleMove();
     renderer.render(scene, camera);
+    requestAnimationFrame(animate);
 }
-renderer.setClearColor(0xffffff);
+renderer.setClearColor(0xF0EAD6);
 animate();
