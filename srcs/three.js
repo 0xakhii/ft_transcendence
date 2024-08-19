@@ -11,27 +11,26 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 const loader = new GLTFLoader();
-let table;
+let table = new THREE.Object3D();
 loader.load('assets/table.glb', function (gltf) {
     table = gltf.scene;
     scene.add(table);
-    table.scale.set(15, 7, 10);
+    table.scale.set(15, 5, 15);
     table.position.z = -10;
 }
 , undefined, function (error) {
     console.error(error);
 });
-let ball;
+let ball = new THREE.Object3D();
 loader.load('assets/ball.glb', function (gltf) {
     ball = gltf.scene;
     scene.add(ball);
-    // ball.scale.set(0.5, 0.5, 0.5);
-    // ball.position.y = 15;
-    // ball.position.z = 22;
+    ball.scale.set(20, 20, 20);
+    ball.position.y = 60;
+    ball.position.z = 35;
 }, undefined, function (error) {
     console.error(error);
 });
-
 
 let paddle = new THREE.Object3D();
 loader.load('assets/paddle.glb', function (gltf) {
@@ -59,7 +58,7 @@ const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 directionalLight.position.set(5, 10, 7.5);
 scene.add(directionalLight);
 
-camera.position.z = 30;
+camera.position.z = 80;
 camera.position.y = 20;
 camera.rotation.x = -Math.PI / 6;
 
@@ -81,9 +80,9 @@ function paddleMove() {
 }
 
 function animate() {
-    paddleMove();
     renderer.render(scene, camera);
-    controls.update();
+    // controls.update();
+    paddleMove();
     requestAnimationFrame(animate);
 }
 renderer.setClearColor(0xF0EAD6);
