@@ -1,7 +1,8 @@
 let canvas = document.getElementById('gamecanvas');
 let game = canvas.getContext('2d');
-canvas.width = window.innerWidth - 1;
-canvas.height = window.innerHeight - 4;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+console.log(canvas.width, canvas.height);
 const ballRad = 10;
 const paddleHeight = 100;
 const paddleWidth = 10;
@@ -36,20 +37,53 @@ function draw() {
     rightPaddle.y = Math.max(0, Math.min(rightPaddle.y, canvas.height - rightPaddle.height));
     
     game.ImageSmoothingEnabled = true;
-    game.fillStyle = 'black';
-    game.fillRect(0, 0, canvas.width, canvas.height);
-    
-    game.fillStyle = 'white';
-    game.fillRect(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height);
+    const img = new Image();
+    img.src = './assets/table.png';
+    img.onload = function() {
+        img.width = canvas.width;
+        img.height = canvas.height;
+        game.drawImage(img, 0, 0, canvas.width, canvas.height);
+    };
+    img.onload();
 
-    game.fillStyle = 'white';
-    game.fillRect(rightPaddle.x, rightPaddle.y, rightPaddle.width, rightPaddle.height);
+    drawStyledPaddle(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height, ['#3498db', '#2980b9']);
+    drawStyledPaddle(rightPaddle.x, rightPaddle.y, rightPaddle.width, rightPaddle.height, ['#e74c3c', '#c0392b']);
 
     game.beginPath();
     game.arc(ball.x, ball.y, ball.rad, 0, Math.PI * 2);
-    game.fillStyle = 'white';
+    game.fillStyle = 'black';
     game.fill();
     game.closePath();
+}
+
+function drawStyledPaddle(x, y, width, height, colors) {
+    game.save();
+    
+    let gradient = game.createLinearGradient(x, y, x + width, y);
+    gradient.addColorStop(0, colors[0]);
+    gradient.addColorStop(1, colors[1]);
+    
+    game.shadowColor = 'rgba(0, 0, 0, 0.5)';
+    game.shadowBlur = 10;
+    game.shadowOffsetX = 5;
+    game.shadowOffsetY = 5;
+    
+    game.beginPath();
+    game.moveTo(x + 10, y);
+    game.lineTo(x + width - 10, y);
+    game.quadraticCurveTo(x + width, y, x + width, y + 10);
+    game.lineTo(x + width, y + height - 10);
+    game.quadraticCurveTo(x + width, y + height, x + width - 10, y + height);
+    game.lineTo(x + 10, y + height);
+    game.quadraticCurveTo(x, y + height, x, y + height - 10);
+    game.lineTo(x, y + 10);
+    game.quadraticCurveTo(x, y, x + 10, y);
+    game.closePath();
+    
+    game.fillStyle = gradient;
+    game.fill();
+    
+    game.restore();
 }
 
 function update(){
@@ -67,8 +101,14 @@ function resetBall(){
 }
 
 function ballMove(){
-    ball.dx += Math.random() < 0.5 ? -1.5 : 1.5;
-    ball.dy += Math.random() < 0.5 ? -1.5 : 1.5;
+    if (Math.random() < 0.5){
+        ball.dx = 1;
+        ball.dy = 1;
+    }
+    else{
+        ball.dx = -1;
+        ball.dy = -1;
+    }
 }
 let score = {
     right: 0,
@@ -87,33 +127,41 @@ function ballWallCollision(){
     }
 }
 
-function ballPaddleCollision(){
+function ballPaddleCollision() {
+    if (ball.x - ball.rad < leftPaddle.x + leftPaddle.width &&
+        ball.y + ball.rad > leftPaddle.y &&
+        ball.y - ball.rad < leftPaddle.y + leftPaddle.height &&
+        ball.dx < 0) {
+        ball.dx = -ball.dx + (Math.random() * 0.5);
+    }
+    else if (ball.x + ball.rad > rightPaddle.x &&
+             ball.y + ball.rad > rightPaddle.y &&
+             ball.y - ball.rad < rightPaddle.y + rightPaddle.height &&
+             ball.dx > 0) {
+        ball.dx = -ball.dx - (Math.random() * 0.5);
+    }
+    
     update();
-    if (ball.y + ball.rad > leftPaddle.y && ball.y - ball.rad < leftPaddle.y + leftPaddle.height && ball.x - ball.rad < leftPaddle.x + leftPaddle.width) {
-        ball.dx += -ball.dx + Math.random() * 0.5;
-    }
-    if (ball.y + ball.rad > rightPaddle.y && ball.y - ball.rad < rightPaddle.y + rightPaddle.height && ball.x + ball.rad > rightPaddle.x) {
-        ball.dx += -ball.dx + Math.random() * 0.5;
-    }
 }
 
 function scoreDisplay(){
-    game.fillStyle = 'white';
-    game.font = '20px Arial';
-    game.fillText(score.left, canvas.width / 2 - 30, 30);
-    game.fillText(score.right, canvas.width / 2 + 10, 30);
+    game.fillStyle = '#2980b9';
+    game.font = '50px Arial';
+    game.fillText(score.left, canvas.width / 2 - 30, 50);
+    game.fillStyle = '#c0392b';
+    game.fillText(score.right, canvas.width / 2 + 30, 50);
 }
 
 function gameOver(){
     scoreDisplay();
     if (score.left === 11 || score.right === 11) {
         if (score.left === 11) {
-            game.fillStyle = 'white';
+            game.fillStyle = 'black';
             game.fillText('Player 1 wins', canvas.width / 2 - 50, canvas.height / 2);
             return 1;
         }
         if (score.right === 11) {
-            game.fillStyle = 'white';
+            game.fillStyle = 'black';
             game.fillText('Player 2 wins', canvas.width / 2 - 50, canvas.height / 2);
             return 1;
         }
@@ -121,8 +169,7 @@ function gameOver(){
 }
 
 function gameLoop(){
-    update();
-	draw();
+    draw();
     ballWallCollision();
     ballPaddleCollision();
     if (ball.dx === 0 && ball.dy === 0) {
@@ -132,9 +179,19 @@ function gameLoop(){
         score.left = 0;
         score.right = 0;
         resetBall();
+        const replayButton = document.createElement('button');
+        replayButton.innerText = 'Replay';
+        replayButton.addEventListener('click', () => {
+            score.left = 0;
+            score.right = 0;
+            resetBall();
+            gameLoop();
+        });
+        canvas.parentNode.appendChild(replayButton);
         return 0;
     }
     requestAnimationFrame(gameLoop);
+    update();
 }
 
 document.addEventListener('keydown', keyDownHandler);
