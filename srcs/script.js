@@ -2,10 +2,9 @@ let canvas = document.getElementById('gamecanvas');
 let game = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
-console.log(canvas.width, canvas.height);
-const ballRad = 10;
-const paddleHeight = 100;
-const paddleWidth = 10;
+const ballRad = 15;
+const paddleHeight = 150;
+const paddleWidth = 25;
 const leftPaddle = {
 	x: 0,
 	y: canvas.height / 2 - paddleHeight / 2,
@@ -33,25 +32,28 @@ const ball = {
 
 function draw() {
     game.clearRect(0, 0, canvas.width, canvas.height);
+    game.lineWidth = 5;
+    game.strokeRect(0, 0, canvas.width, canvas.height);
+    game.fillStyle = 'black';
+    game.fillRect(0, 0, canvas.width, canvas.height);
+    game.clearRect(0, 10, canvas.width, canvas.height - 20);
     leftPaddle.y = Math.max(0, Math.min(leftPaddle.y, canvas.height - leftPaddle.height));
     rightPaddle.y = Math.max(0, Math.min(rightPaddle.y, canvas.height - rightPaddle.height));
     
     game.ImageSmoothingEnabled = true;
-    const img = new Image();
-    img.src = './assets/table.png';
-    img.onload = function() {
-        img.width = canvas.width;
-        img.height = canvas.height;
-        game.drawImage(img, 0, 0, canvas.width, canvas.height);
-    };
-    img.onload();
-
-    drawStyledPaddle(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height, ['#3498db', '#2980b9']);
-    drawStyledPaddle(rightPaddle.x, rightPaddle.y, rightPaddle.width, rightPaddle.height, ['#e74c3c', '#c0392b']);
+    // const img = new Image();
+    // img.src = './assets/table.png';
+    // img.onload = function() {
+    //     game.drawImage(img, 0, 0, canvas.width, canvas.height);
+    // };
+    // img.onload();
+    
+    drawStyledPaddle(leftPaddle.x + 10, leftPaddle.y, leftPaddle.width, leftPaddle.height, ['#3498db', '#2980b9']);
+    drawStyledPaddle(rightPaddle.x - 10, rightPaddle.y, rightPaddle.width, rightPaddle.height, ['#e74c3c', '#c0392b']);
 
     game.beginPath();
     game.arc(ball.x, ball.y, ball.rad, 0, Math.PI * 2);
-    game.fillStyle = 'black';
+    game.fillStyle = 'orange';
     game.fill();
     game.closePath();
 }
@@ -64,7 +66,7 @@ function drawStyledPaddle(x, y, width, height, colors) {
     gradient.addColorStop(1, colors[1]);
     
     game.shadowColor = 'rgba(0, 0, 0, 0.5)';
-    game.shadowBlur = 10;
+    game.shadowBlur = 5;
     game.shadowOffsetX = 5;
     game.shadowOffsetY = 5;
     
@@ -102,12 +104,12 @@ function resetBall(){
 
 function ballMove(){
     if (Math.random() < 0.5){
-        ball.dx = 1;
-        ball.dy = 1;
+        ball.dx = 1.5;
+        ball.dy = 1.5;
     }
     else{
-        ball.dx = -1;
-        ball.dy = -1;
+        ball.dx = -1.5;
+        ball.dy = -1.5;
     }
 }
 let score = {
@@ -115,16 +117,22 @@ let score = {
     left: 0
 };
 function ballWallCollision(){
-    update();
     if (ball.y + ball.rad > canvas.height || ball.y - ball.rad < 0)
         ball.dy = -ball.dy;
     if (ball.x + ball.rad > canvas.width || ball.x - ball.rad < 0) {
-        if (ball.x + ball.rad > canvas.width)
+        if (ball.x + ball.rad > canvas.width){
+            console.log(ball.dx, ball.dy);
+            playerScored(ball.dy, ball.dx);
             score.left++;
-        else
+        }
+        else{
+            console.log(ball.dx, ball.dy);
+            playerScored(ball.dy, ball.dx);
             score.right++;
+        }
         resetBall();
     }
+    update();
 }
 
 function ballPaddleCollision() {
@@ -140,29 +148,28 @@ function ballPaddleCollision() {
              ball.dx > 0) {
         ball.dx = -ball.dx - (Math.random() * 0.5);
     }
-    
     update();
 }
 
 function scoreDisplay(){
     game.fillStyle = '#2980b9';
-    game.font = '50px Arial';
-    game.fillText(score.left, canvas.width / 2 - 30, 50);
+    game.font = '100px Arial';
+    game.fillText(score.left, canvas.width / 2 - 100, 100);
     game.fillStyle = '#c0392b';
-    game.fillText(score.right, canvas.width / 2 + 30, 50);
+    game.fillText(score.right, canvas.width / 2 + 40, 100);
 }
 
 function gameOver(){
     scoreDisplay();
-    if (score.left === 11 || score.right === 11) {
-        if (score.left === 11) {
+    if (score.left === 1 || score.right === 1) {
+        if (score.left === 1) {
             game.fillStyle = 'black';
-            game.fillText('Player 1 wins', canvas.width / 2 - 50, canvas.height / 2);
+            game.fillText('Player 1 wins', canvas.width / 2 - 300, canvas.height / 2);
             return 1;
         }
-        if (score.right === 11) {
+        if (score.right === 1) {
             game.fillStyle = 'black';
-            game.fillText('Player 2 wins', canvas.width / 2 - 50, canvas.height / 2);
+            game.fillText('Player 2 wins', canvas.width / 2 - 300, canvas.height / 2);
             return 1;
         }
     }
@@ -179,15 +186,6 @@ function gameLoop(){
         score.left = 0;
         score.right = 0;
         resetBall();
-        const replayButton = document.createElement('button');
-        replayButton.innerText = 'Replay';
-        replayButton.addEventListener('click', () => {
-            score.left = 0;
-            score.right = 0;
-            resetBall();
-            gameLoop();
-        });
-        canvas.parentNode.appendChild(replayButton);
         return 0;
     }
     requestAnimationFrame(gameLoop);
