@@ -104,30 +104,52 @@ function resetBall(){
 
 function ballMove(){
     if (Math.random() < 0.5){
-        ball.dx = 1.5;
-        ball.dy = 1.5;
+        ball.dx = 2.5;
+        ball.dy = 2.5;
     }
     else{
-        ball.dx = -1.5;
-        ball.dy = -1.5;
+        ball.dx = -2.5;
+        ball.dy = -2.5;
     }
 }
 let score = {
     right: 0,
     left: 0
 };
+
+function RestartButton(){
+    const restartButton = document.createElement('button');
+    restartButton.innerText = 'Restart';
+    restartButton.style.position = 'absolute';
+    restartButton.style.left = `${canvas.width / 2 - 100}px`;
+    restartButton.style.top = `${canvas.height / 2 + 100}px`;
+    restartButton.style.width = '200px';
+    restartButton.style.height = '50px';
+    restartButton.style.backgroundColor = 'black';
+    restartButton.style.color = 'white';
+    restartButton.style.fontFamily = 'Arial';
+    restartButton.style.fontSize = '30px';
+    restartButton.style.border = 'none';
+    restartButton.style.cursor = 'pointer';
+    
+    restartButton.addEventListener('click', function() {
+        console.log('Restarted');
+        resetBall();
+        restartButton.style.display = 'none';
+        gameLoop();
+    });
+    
+    canvas.parentNode.appendChild(restartButton);
+}
+
 function ballWallCollision(){
     if (ball.y + ball.rad > canvas.height || ball.y - ball.rad < 0)
         ball.dy = -ball.dy;
     if (ball.x + ball.rad > canvas.width || ball.x - ball.rad < 0) {
         if (ball.x + ball.rad > canvas.width){
-            console.log(ball.dx, ball.dy);
-            playerScored(ball.dy, ball.dx);
             score.left++;
         }
         else{
-            console.log(ball.dx, ball.dy);
-            playerScored(ball.dy, ball.dx);
             score.right++;
         }
         resetBall();
@@ -161,13 +183,13 @@ function scoreDisplay(){
 
 function gameOver(){
     scoreDisplay();
-    if (score.left === 1 || score.right === 1) {
-        if (score.left === 1) {
+    if (score.left === 11 || score.right === 11) {
+        if (score.left === 11) {
             game.fillStyle = 'black';
             game.fillText('Player 1 wins', canvas.width / 2 - 300, canvas.height / 2);
             return 1;
         }
-        if (score.right === 1) {
+        if (score.right === 11) {
             game.fillStyle = 'black';
             game.fillText('Player 2 wins', canvas.width / 2 - 300, canvas.height / 2);
             return 1;
@@ -185,7 +207,7 @@ function gameLoop(){
     if (gameOver() === 1) {
         score.left = 0;
         score.right = 0;
-        resetBall();
+        RestartButton();
         return 0;
     }
     requestAnimationFrame(gameLoop);
