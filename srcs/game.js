@@ -121,11 +121,11 @@ function RestartButton(){
     restartButton.style.width = '200px';
     restartButton.style.height = '50px';
     restartButton.style.borderRadius = '15px';
-    if (score.left === 1){
+    if (score.left === 11){
         restartButton.style.backgroundColor = '#3498db';
         restartButton.style.color = '#ff4444';
     }
-    else if (score.right === 1){
+    else if (score.right === 11){
         restartButton.style.backgroundColor = '#ff4444';
         restartButton.style.color = '#3498db';
     }
@@ -137,15 +137,31 @@ function RestartButton(){
         console.log('Restarted');
         resetBall();
         restartButton.style.display = 'none';
+        score.left = 0;
+        score.right = 0;
         gameLoop();
     });
     
     canvas.parentNode.appendChild(restartButton);
 }
 
+function PrintTimer(timer, color){
+    const countdownWidth = 100;
+    const countdownHeight = 100;
+    const clearX = canvas.width / 2 - countdownWidth / 2;
+    const clearY = canvas.height / 2 - countdownHeight / 2;
+    game.clearRect(clearX, clearY, countdownWidth, countdownHeight);
+    game.fillStyle = color;
+    game.font = '50px "Press Start 2P"';
+    game.fillText(timer, canvas.width / 2, canvas.height / 2 + 5);
+}
+
 let countdownTimerId;
 let gamePaused = false;
+let timer = 3;
 function countdown(seconds, color, resetBall) {
+    resetBall();
+    draw();
     let timer = seconds;
     if (countdownTimerId)
         clearTimeout(countdownTimerId);
@@ -153,16 +169,16 @@ function countdown(seconds, color, resetBall) {
         countdownTimerId = setTimeout(() => {
             game.fillStyle = color;
             game.font = '50px "Press Start 2P"';
-            game.fillText(timer,  canvas.width / 2 - 300, canvas.height / 2);
-            game.clearRect(canvas.width / 2 + 300, canvas.height / 2 + 300, canvas.width / 2 - 300, canvas.height / 2);
+            PrintTimer(timer, color);
             timer--;
             if (timer >= 0) {
                 countdownTimer();
             } else {
                 console.log("Countdown finished!");
                 gamePaused = false;
-                resetBall();
+                gameLoop();
                 update();
+                return;
             }
         }, 1000);
     };
@@ -177,11 +193,15 @@ function ballWallCollision() {
     if (ball.x + ball.rad > canvas.width || ball.x - ball.rad < 0) {
         if (ball.x + ball.rad > canvas.width) {
             score.left++;
-            // countdown(3, '#2980b9', resetBall);
+            if (score.left != 11)
+                countdown(3, '#2980b9', resetBall);
         } else {
             score.right++;
-            // countdown(3, '#c0392b', resetBall);
+            if (score.right != 11)
+                countdown(3, '#c0392b', resetBall);
         }
+        resetBall();
+        return;
     }
     update();
 }
@@ -242,8 +262,6 @@ function gameLoop(){
         ballMove();
     }
     if (gameOver() === 1 && (score.left === 11 || score.right === 11)) {
-        score.left = 0;
-        score.right = 0;
         RestartButton();
         return 0;
     }

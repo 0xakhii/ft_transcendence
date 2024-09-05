@@ -117,3 +117,12 @@ body {
 	float: center;
 	transform: translateY(30%);
 }
+
+.three-canvas{
+  width: 50%;
+  height: auto;
+  margin: 0 auto;
+  display: block;
+  float: center;
+  transform: translateY(30%);
+}

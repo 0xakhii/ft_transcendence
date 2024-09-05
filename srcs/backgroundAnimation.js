@@ -16,8 +16,8 @@ class Star {
         this.x = Math.random() * bgCanvas.width ? Math.random() * bgCanvas.width : 0;
         this.y = Math.random() * bgCanvas.height ? Math.random() * bgCanvas.height : 0;
         this.size = Math.random() * 2 ? Math.random() * 2 : 1;
-        this.speedX = (Math.random() - 0.5) * 0.5 + 0.5;
-        this.speedY = (Math.random() - 0.5) * 0.5 + 0.5;
+        this.speedX = Math.random() * 0.2 ? Math.random() * 0.2 : 0.1;
+        this.speedY = Math.random() * 0.2 ? Math.random() * 0.2 : 0.1;
     }
 
     update(ballX, ballY) {
@@ -32,9 +32,9 @@ class Star {
         const dx = ballX - this.x ? ballX - this.x : 0;
         const dy = ballY - this.y ? ballY - this.y : 0;
         const distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < 300) {
-            this.x += dx / distance * 2;
-            this.y += dy / distance * 2;
+        if (distance < 150) {
+            this.x -= dx / distance * 2;
+            this.y -= dy / distance * 2;
         }
     }
 
@@ -47,7 +47,7 @@ class Star {
 }
 
 const stars = [];
-for (let i = 0; i < 500; i++) {
+for (let i = 0; i < 2500; i++) {
     stars.push(new Star());
 }
 
@@ -56,12 +56,12 @@ function animateBackground(ballX, ballY) {
     bgCtx.fillStyle = 'rgba(255, 255, 255, 0.1)';
     bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
     stars.forEach(star => {
-        star.update(ballX, ballY);
+        star.update(ballX , ballY);
         star.draw();
     });
-
     requestAnimationFrame(() => animateBackground(ball.x, ball.y));
 }
+
 
 animateBackground(ball.x, ball.y);
 
