@@ -15,9 +15,9 @@ class Star {
     constructor() {
         this.x = Math.random() * bgCanvas.width ? Math.random() * bgCanvas.width : 0;
         this.y = Math.random() * bgCanvas.height ? Math.random() * bgCanvas.height : 0;
-        this.size = Math.random() * 2 ? Math.random() * 2 : 1;
-        this.speedX = Math.random() * 0.2 ? Math.random() * 0.2 : 0.1;
-        this.speedY = Math.random() * 0.2 ? Math.random() * 0.2 : 0.1;
+        this.size = Math.random() * 2 ? Math.random() * 2 : 2;
+        this.speedX = Math.random() * 0.2 ? Math.random() * 0.5 : 0.5;
+        this.speedY = Math.random() * 0.2 ? Math.random() * 0.5 : 0.5;
     }
 
     update(ballX, ballY) {
@@ -39,15 +39,16 @@ class Star {
     }
 
     draw() {
-        bgCtx.fillStyle = 'rgba(255, 255, 255)';
+        bgCtx.fillStyle = 'rgba(255, 255, 255, 0.8)';
         bgCtx.beginPath();
         bgCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         bgCtx.fill();
+        bgCtx.closePath();
     }
 }
 
 const stars = [];
-for (let i = 0; i < 2500; i++) {
+for (let i = 0; i < 1500; i++) {
     stars.push(new Star());
 }
 
@@ -62,11 +63,4 @@ function animateBackground(ballX, ballY) {
     requestAnimationFrame(() => animateBackground(ball.x, ball.y));
 }
 
-
 animateBackground(ball.x, ball.y);
-
-
-window.addEventListener('resize', () => {
-    bgCanvas.width = window.innerWidth;
-    bgCanvas.height = window.innerHeight;
-});

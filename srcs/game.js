@@ -5,12 +5,15 @@ canvas.height = window.innerHeight;
 const ballRad = 15;
 const paddleHeight = 150;
 const paddleWidth = 25;
+let ballTouchedWall = false;
 const leftPaddle = {
 	x: 0,
 	y: canvas.height / 2 - paddleHeight / 2,
 	width: paddleWidth,
 	height: paddleHeight,
-	dy: 0
+	dy: 0,
+    ballTouchedPaddle: false,
+    color: '#3498db'
 };
 
 const rightPaddle = {
@@ -18,7 +21,9 @@ const rightPaddle = {
 	y: canvas.height / 2 - paddleHeight / 2,
 	width: paddleWidth,
 	height: paddleHeight,
-	dy: 0
+	dy: 0,
+    ballTouchedPaddle: false,
+    color: '#e74c3c'
 };
 
 const ball = {
@@ -26,30 +31,51 @@ const ball = {
 	y: canvas.height / 2,
 	rad: ballRad,
 	dy: 0,
-	dx: 0
+	dx: 0,
+    speed: 5,
 };
+
+function drawBall(game, ball) {
+    game.beginPath();
+    game.arc(ball.x, ball.y, ball.rad, 0, Math.PI * 2);
+    game.fillStyle = 'rgba(255, 165, 0)';
+    game.fill();
+    game.closePath();
+  
+    for (let i = 1; i <= ball.speed && ball.speed > 10; i++) {
+        game.beginPath();
+        let radius = Math.abs(ball.rad - i);
+        game.arc(ball.x - ball.dx * i * 2, ball.y - ball.dy * i * 2, radius, 0, Math.PI * 2);
+        
+        game.fillStyle = `rgba(255, 125, 65, ${(0.8 - i * ball.speed / 1000)})`;
+        game.fill();
+        game.closePath();
+    }
+}
 
 
 function draw() {
+    game.ImageSmoothingEnabled = true;
     game.clearRect(0, 0, canvas.width, canvas.height);
     game.lineWidth = 5;
     game.strokeRect(0, 0, canvas.width, canvas.height);
-    game.fillStyle = 'black';
+    game.fillStyle = 'rgb(254, 167, 10, 0.8)';
     game.fillRect(0, 0, canvas.width, canvas.height);
     game.clearRect(0, 10, canvas.width, canvas.height - 20);
+    if (ballTouchedWall) {
+        game.shadowColor = 'rgb(254, 167, 10)';
+        game.shadowBlur = 10;
+        game.shadowOffsetX = 0;
+        game.shadowOffsetY = 0;
+    }
     leftPaddle.y = Math.max(0, Math.min(leftPaddle.y, canvas.height - leftPaddle.height));
     rightPaddle.y = Math.max(0, Math.min(rightPaddle.y, canvas.height - rightPaddle.height));
     
-    game.ImageSmoothingEnabled = true;
-    
+    game.shadowColor = 'rgba(0, 0, 0, 0.5)';
     drawStyledPaddle(leftPaddle.x + 10, leftPaddle.y, leftPaddle.width, leftPaddle.height, ['#3498db', '#2980b9']);
     drawStyledPaddle(rightPaddle.x - 10, rightPaddle.y, rightPaddle.width, rightPaddle.height, ['#e74c3c', '#c0392b']);
 
-    game.beginPath();
-    game.arc(ball.x, ball.y, ball.rad, 0, Math.PI * 2);
-    game.fillStyle = 'orange';
-    game.fill();
-    game.closePath();
+    drawBall(game, ball);
 }
 
 function drawStyledPaddle(x, y, width, height, colors) {
@@ -75,7 +101,15 @@ function drawStyledPaddle(x, y, width, height, colors) {
     game.lineTo(x, y + 10);
     game.quadraticCurveTo(x, y, x + 10, y);
     game.closePath();
-    
+    if (leftPaddle.ballTouchedPaddle || rightPaddle.ballTouchedPaddle) {
+        if (leftPaddle.ballTouchedPaddle)
+            game.shadowColor = leftPaddle.color;
+        else
+            game.shadowColor = rightPaddle.color;
+        game.shadowBlur = 50;
+        game.shadowOffsetX = 0;
+        game.shadowOffsetY = 0;
+    }
     game.fillStyle = gradient;
     game.fill();
     
@@ -94,6 +128,7 @@ function resetBall(){
     ball.y = canvas.height / 2;
     ball.dx = 0;
     ball.dy = 0;
+    ball.speed = 5;
 }
 
 function ballMove(){
@@ -168,7 +203,7 @@ function countdown(seconds, color, resetBall) {
     const countdownTimer = () => {
         countdownTimerId = setTimeout(() => {
             game.fillStyle = color;
-            game.font = '50px "Press Start 2P"';
+            game.font = '75px "Press Start 2P"';
             PrintTimer(timer, color);
             timer--;
             if (timer >= 0) {
@@ -189,6 +224,7 @@ function countdown(seconds, color, resetBall) {
 function ballWallCollision() {
     if (ball.y + ball.rad > canvas.height || ball.y - ball.rad < 0) {
         ball.dy = -ball.dy;
+        ballTouchedWall = true;
     }
     if (ball.x + ball.rad > canvas.width || ball.x - ball.rad < 0) {
         if (ball.x + ball.rad > canvas.width) {
@@ -213,24 +249,27 @@ function ballPaddleCollision() {
         ball.y - ball.rad < leftPaddle.y + leftPaddle.height &&
         ball.dx < 0) {
         ball.dx = -ball.dx + (Math.random() * 0.5);
+        leftPaddle.ballTouchedPaddle = true;
     }
     else if (ball.x + ball.rad > rightPaddle.x &&
              ball.y + ball.rad > rightPaddle.y &&
              ball.y - ball.rad < rightPaddle.y + rightPaddle.height &&
              ball.dx > 0) {
         ball.dx = -ball.dx - (Math.random() * 0.5);
+        leftPaddle.ballTouchedPaddle = true;
     }
+    ball.speed += 0.01;
     update();
 }
 
 
 function scoreDisplay() {
-    document.fonts.load('50px "Press Start 2P"').then(function () {
+    document.fonts.load('75px "Press Start 2P"').then(function () {
         game.fillStyle = '#2980b9';
-        game.font = '50px "Press Start 2P"';
-        game.fillText(score.left, canvas.width / 2 - 100, 100);
+        game.font = '75px "Press Start 2P"';
+        game.fillText(score.left, canvas.width / 2 - 160, 150);
         game.fillStyle = '#c0392b';
-        game.fillText(score.right, canvas.width / 2 + 40, 100);
+        game.fillText(score.right, canvas.width / 2 + 60, 150);
     }).catch(function (error) {
         console.error('Font could not be loaded', error);
     });
@@ -249,6 +288,8 @@ function gameOver(){
             game.fillText('Player 2 won', canvas.width / 2 - 300, canvas.height / 2);
             return 1;
         }
+        resetBall();
+        draw();
     }
 }
 
@@ -256,11 +297,20 @@ function gameLoop(){
     if (gamePaused)
         return;
     draw();
+    ballTouchedWall = false;
+    leftPaddle.ballTouchedPaddle = false;
+    rightPaddle.ballTouchedPaddle = false;
     ballWallCollision();
     ballPaddleCollision();
     if (ball.dx === 0 && ball.dy === 0) {
         ballMove();
     }
+    // if (score.left === 5 || score.right === 5) {
+    //     if (score.left === 5)
+    //         leftPaddle.height = 50;
+    //     else
+    //         rightPaddle.height = 50;
+    // }
     if (gameOver() === 1 && (score.left === 11 || score.right === 11)) {
         RestartButton();
         return 0;
