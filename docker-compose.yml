@@ -1,6 +1,11 @@
 version: '3.8'
 
 services:
-  game:
+  front:
     build: ./
+    init: true
+  back:
+    build: ./srcs/backend
+    ports:
+      - "8000:8000"
     init: true

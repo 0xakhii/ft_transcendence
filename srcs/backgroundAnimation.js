@@ -32,7 +32,7 @@ class Star {
         const dx = ballX - this.x ? ballX - this.x : 0;
         const dy = ballY - this.y ? ballY - this.y : 0;
         const distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < 150) {
+        if (distance < 300) {
             this.x -= dx / distance * 2;
             this.y -= dy / distance * 2;
         }
@@ -59,6 +59,8 @@ function animateBackground(ballX, ballY) {
     stars.forEach(star => {
         star.update(ballX , ballY);
         star.draw();
+        star.speedX += 0.0001;
+        star.speedY += 0.0001;
     });
     requestAnimationFrame(() => animateBackground(ball.x, ball.y));
 }

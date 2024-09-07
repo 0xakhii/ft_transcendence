@@ -46,8 +46,8 @@ function drawBall(game, ball) {
         game.beginPath();
         let radius = Math.abs(ball.rad - i);
         game.arc(ball.x - ball.dx * i * 2, ball.y - ball.dy * i * 2, radius, 0, Math.PI * 2);
-        
-        game.fillStyle = `rgba(255, 125, 65, ${(0.8 - i * ball.speed / 1000)})`;
+        game.fillStyle = `rgba(255, 165, 50, ${(0.3 - i * ball.speed / 1000)})`;
+        game.shadowBlur = -10;
         game.fill();
         game.closePath();
     }
