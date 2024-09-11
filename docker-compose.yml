@@ -3,9 +3,22 @@ version: '3.8'
 services:
   front:
     build: ./
+    ports:
+      - "5173:5173"
     init: true
+
   back:
     build: ./srcs/backend
     ports:
       - "8000:8000"
+    depends_on:
+      - db
+    init: true
+  
+  db:
+    image: postgres:15
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
     init: true
