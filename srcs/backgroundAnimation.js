@@ -15,7 +15,7 @@ class Star {
     constructor() {
         this.x = Math.random() * bgCanvas.width ? Math.random() * bgCanvas.width : 0;
         this.y = Math.random() * bgCanvas.height ? Math.random() * bgCanvas.height : 0;
-        this.size = Math.random() * 2 ? Math.random() * 2 : 2;
+        this.size = Math.random() * 2 ? Math.random() * 4 : 4;
         this.speedX = Math.random() * 0.2 ? Math.random() * 0.5 : 0.5;
         this.speedY = Math.random() * 0.2 ? Math.random() * 0.5 : 0.5;
     }
@@ -32,7 +32,7 @@ class Star {
         const dx = ballX - this.x ? ballX - this.x : 0;
         const dy = ballY - this.y ? ballY - this.y : 0;
         const distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < 300) {
+        if (distance < 150) {
             this.x -= dx / distance * 2;
             this.y -= dy / distance * 2;
         }

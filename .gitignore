@@ -5,3 +5,4 @@ package-lock.json
 package.json
 .env
 pkg/
+my_env/

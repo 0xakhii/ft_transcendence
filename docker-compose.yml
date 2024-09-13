@@ -5,6 +5,7 @@ services:
     build: ./
     ports:
       - "5173:5173"
+    restart: always
     init: true
 
   back:
@@ -13,6 +14,9 @@ services:
       - "8000:8000"
     depends_on:
       - db
+    restart: always
+    env_file:
+      - .env
     init: true
   
   db:
@@ -21,4 +25,7 @@ services:
       - "5432:5432"
     env_file:
       - .env
+    restart: always
+    depends_on:
+      - front
     init: true
