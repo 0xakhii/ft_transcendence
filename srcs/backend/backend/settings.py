@@ -82,7 +82,7 @@ DATABASES = {
         'NAME': os.environ.get('POSTGRES_DB'),
         'USER': os.environ.get('POSTGRES_USER'),
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        'HOST': 'db',  # Referencing the Docker Compose service
+        'HOST': 'db',
         'PORT': '5432',
     }
 }
