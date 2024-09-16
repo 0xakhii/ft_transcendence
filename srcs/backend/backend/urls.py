@@ -25,10 +25,10 @@ router = routers.DefaultRouter()
 urlpatterns = router.urls
 
 urlpatterns += [
-    path('admin/', admin.site.urls),
-    path('pong/', include('pong.urls')),
+    # path('admin/', admin.site.urls),
+    path('', include('pong.urls')),
     # path('', views.home, name='home'), 
-    path('test/', views.test, name='test'), 
+    # path('test/', views.test, name='test'), 
 ]
 
 
