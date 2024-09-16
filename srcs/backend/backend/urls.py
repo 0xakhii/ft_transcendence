@@ -18,10 +18,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from pong import views
-urlpatterns = [
+from rest_framework import routers
+
+router = routers.DefaultRouter()
+
+urlpatterns = router.urls
+
+urlpatterns += [
     path('admin/', admin.site.urls),
     path('pong/', include('pong.urls')),
-    path('', views.home, name='home'), 
+    # path('', views.home, name='home'), 
+    path('test/', views.test, name='test'), 
 ]
 
 
