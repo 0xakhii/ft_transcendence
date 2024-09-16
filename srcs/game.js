@@ -329,7 +329,7 @@ function keyDownHandler(event) {
         //     rightPaddle.y = 0;
         //     rightPaddle.dy = 0;
         // }
-        fetch('/api/move', {
+        fetch('http://localhost:8000', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -342,13 +342,13 @@ function keyDownHandler(event) {
         //     rightPaddle.y = canvas.height - rightPaddle.height;
         //     rightPaddle.dy = 0;
         // }
-        fetch('/api/move', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ direction: 'down' })
-        });
+        // fetch('http://localhost:8000', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({ direction: 'down' })
+        // });
     }
     // if (event.key === 'w') {
     //     leftPaddle.dy = -5;
@@ -368,13 +368,13 @@ function keyDownHandler(event) {
 
 function keyUpHandler(event) {
     if (event.key === 'ArrowUp' || event.key === 'ArrowDown'){
-        fetch('http://localhost:8000/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ direction: 'stop' })
-        });
+        // fetch('http://localhost:8000/', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({ direction: 'stop' })
+        // });
         // rightPaddle.dy = 0;
     }
     if (event.key === 'w' || event.key === 's')
@@ -387,6 +387,7 @@ function fetchGameState() {
     fetch("http://localhost:8000/")
         .then(response => response.json())
         .then(data => {
+            console.log(data);
             game.clearRect(0, 0, canvas.width, canvas.height);
             game.ImageSmoothingEnabled = true;
             game.clearRect(0, 0, canvas.width, canvas.height);
@@ -413,10 +414,10 @@ function fetchGameState() {
                 game.closePath();
             }
 
-            const leftPaddle = data.left_paddle;
+            leftPaddle = data.left_paddle;
             drawStyledPaddle(leftPaddle.x + 10, leftPaddle.y, leftPaddle.width, leftPaddle.height, ['#3498db', '#2980b9']);
             
-            const rightPaddle = data.right_paddle;
+            rightPaddle = data.right_paddle;
             drawStyledPaddle(rightPaddle.x - 10, rightPaddle.y, rightPaddle.width, rightPaddle.height, ['#e74c3c', '#c0392b']);
             score = data.score;
         });
