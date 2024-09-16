@@ -1,4 +1,4 @@
-.vite
+.vite/deps
 srcs/.vite
 node_modules
 package-lock.json
