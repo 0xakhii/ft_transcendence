@@ -6,3 +6,4 @@ package.json
 # .env
 pkg/
 my_env/
+.venv/

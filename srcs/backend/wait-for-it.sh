@@ -160,6 +160,9 @@ fi
 if [[ $WAITFORIT_CHILD -gt 0 ]]; then
     wait_for
     WAITFORIT_RESULT=$?
+    python backend/manage.py makemigrations
+    python backend/manage.py migrate
+    echo "Migrations completed"
     exit $WAITFORIT_RESULT
 else
     if [[ $WAITFORIT_TIMEOUT -gt 0 ]]; then

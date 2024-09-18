@@ -1,5 +1,5 @@
 let canvas = document.getElementById('gamecanvas');
-let game = canvas.getContext('2d');
+let ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 let ball;
@@ -78,41 +78,41 @@ let score;
 // }
 
 function drawStyledPaddle(x, y, width, height, colors) {
-    game.save();
+    ctx.save();
     
-    let gradient = game.createLinearGradient(x, y, x + width, y);
+    let gradient = ctx.createLinearGradient(x, y, x + width, y);
     gradient.addColorStop(0, colors[0]);
     gradient.addColorStop(1, colors[1]);
     
-    game.shadowColor = 'rgba(0, 0, 0, 0.5)';
-    game.shadowBlur = 5;
-    game.shadowOffsetX = 5;
-    game.shadowOffsetY = 5;
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+    ctx.shadowBlur = 5;
+    ctx.shadowOffsetX = 5;
+    ctx.shadowOffsetY = 5;
     
-    game.beginPath();
-    game.moveTo(x + 10, y);
-    game.lineTo(x + width - 10, y);
-    game.quadraticCurveTo(x + width, y, x + width, y + 10);
-    game.lineTo(x + width, y + height - 10);
-    game.quadraticCurveTo(x + width, y + height, x + width - 10, y + height);
-    game.lineTo(x + 10, y + height);
-    game.quadraticCurveTo(x, y + height, x, y + height - 10);
-    game.lineTo(x, y + 10);
-    game.quadraticCurveTo(x, y, x + 10, y);
-    game.closePath();
+    ctx.beginPath();
+    ctx.moveTo(x + 10, y);
+    ctx.lineTo(x + width - 10, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + 10);
+    ctx.lineTo(x + width, y + height - 10);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - 10, y + height);
+    ctx.lineTo(x + 10, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - 10);
+    ctx.lineTo(x, y + 10);
+    ctx.quadraticCurveTo(x, y, x + 10, y);
+    ctx.closePath();
     if (leftPaddle.ballTouchedPaddle || rightPaddle.ballTouchedPaddle) {
         if (leftPaddle.ballTouchedPaddle)
-            game.shadowColor = leftPaddle.color;
+            ctx.shadowColor = leftPaddle.color;
         else
-            game.shadowColor = rightPaddle.color;
-        game.shadowBlur = 50;
-        game.shadowOffsetX = 0;
-        game.shadowOffsetY = 0;
+            ctx.shadowColor = rightPaddle.color;
+        ctx.shadowBlur = 50;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
     }
-    game.fillStyle = gradient;
-    game.fill();
+    ctx.fillStyle = gradient;
+    ctx.fill();
     
-    game.restore();
+    ctx.restore();
 }
 
 function update(){
@@ -184,10 +184,10 @@ function PrintTimer(timer, color){
     const countdownHeight = 100;
     const clearX = canvas.width / 2 - countdownWidth / 2;
     const clearY = canvas.height / 2 - countdownHeight / 2;
-    game.clearRect(clearX, clearY, countdownWidth, countdownHeight);
-    game.fillStyle = color;
-    game.font = '50px "Press Start 2P"';
-    game.fillText(timer, canvas.width / 2, canvas.height / 2 + 5);
+    ctx.clearRect(clearX, clearY, countdownWidth, countdownHeight);
+    ctx.fillStyle = color;
+    ctx.font = '50px "Press Start 2P"';
+    ctx.fillText(timer, canvas.width / 2, canvas.height / 2 + 5);
 }
 
 let countdownTimerId;
@@ -201,8 +201,8 @@ function countdown(seconds, color, resetBall) {
         clearTimeout(countdownTimerId);
     const countdownTimer = () => {
         countdownTimerId = setTimeout(() => {
-            game.fillStyle = color;
-            game.font = '75px "Press Start 2P"';
+            ctx.fillStyle = color;
+            ctx.font = '75px "Press Start 2P"';
             PrintTimer(timer, color);
             timer--;
             if (timer >= 0) {
@@ -264,11 +264,11 @@ function countdown(seconds, color, resetBall) {
 
 function scoreDisplay() {
     document.fonts.load('75px "Press Start 2P"').then(function () {
-        game.fillStyle = '#2980b9';
-        game.font = '75px "Press Start 2P"';
-        game.fillText(score.left, canvas.width / 2 - 160, 150);
-        game.fillStyle = '#c0392b';
-        game.fillText(score.right, canvas.width / 2 + 60, 150);
+        ctx.fillStyle = '#2980b9';
+        ctx.font = '75px "Press Start 2P"';
+        ctx.fillText(score.left, canvas.width / 2 - 160, 150);
+        ctx.fillStyle = '#c0392b';
+        ctx.fillText(score.right, canvas.width / 2 + 60, 150);
     }).catch(function (error) {
         console.error('Font could not be loaded', error);
     });
@@ -278,13 +278,13 @@ function gameOver(){
     scoreDisplay();
     if (score.left === 11 || score.right === 11) {
         if (score.left === 11) {
-            game.fillStyle = '#2980b9';
-            game.fillText('Player 1 won', canvas.width / 2 - 300, canvas.height / 2);
+            ctx.fillStyle = '#2980b9';
+            ctx.fillText('Player 1 won', canvas.width / 2 - 300, canvas.height / 2);
             return 1;
         }
         if (score.right === 11) {
-            game.fillStyle = '#c0392b';
-            game.fillText('Player 2 won', canvas.width / 2 - 300, canvas.height / 2);
+            ctx.fillStyle = '#c0392b';
+            ctx.fillText('Player 2 won', canvas.width / 2 - 300, canvas.height / 2);
             return 1;
         }
         resetBall();
@@ -292,8 +292,19 @@ function gameOver(){
     }
 }
 
+let lastRequestTime = 0;
+function makeRequest() {
+    const now = Date.now();
+    if (now - lastRequestTime > 1000) {  // One request per second
+        fetchGameState();
+        lastRequestTime = now;
+    }
+}
 function gameLoop(){
-    setInterval(fetchGameState, 100);
+    // setInterval(fetchGameState, 100);
+    makeRequest();  // Call the throttling function
+    // Example throttling function
+
     // if (gamePaused)
     //     return;
     // draw();
@@ -316,7 +327,7 @@ function gameLoop(){
     //     return 0;
     // }
     requestAnimationFrame(gameLoop);
-    update();
+    // update();
 }
 
 document.addEventListener('keydown', keyDownHandler);
@@ -329,13 +340,13 @@ function keyDownHandler(event) {
         //     rightPaddle.y = 0;
         //     rightPaddle.dy = 0;
         // }
-        fetch('http://localhost:8000', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ direction: 'up' })
-        });
+        // fetch('http://localhost:8000', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({ direction: 'up' })
+        // });
     } else if (event.key === 'ArrowDown') {
         // rightPaddle.dy = 5;
         // if (rightPaddle.y + rightPaddle.height + rightPaddle.dy > canvas.height) {
@@ -384,41 +395,54 @@ function keyUpHandler(event) {
 gameLoop();
 
 function fetchGameState() {
-    fetch("http://localhost:8000/")
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            game.clearRect(0, 0, canvas.width, canvas.height);
-            game.ImageSmoothingEnabled = true;
-            game.clearRect(0, 0, canvas.width, canvas.height);
-            game.lineWidth = 5;
-            game.strokeRect(0, 0, canvas.width, canvas.height);
-            game.fillStyle = 'rgb(254, 167, 10, 0.8)';
-            game.fillRect(0, 0, canvas.width, canvas.height);
-            game.clearRect(0, 10, canvas.width, canvas.height - 20);
-
-            ball = data.ball;
-            game.beginPath();
-            game.arc(ball.x, ball.y, ball.rad, 0, Math.PI * 2);
-            game.fillStyle = 'rgba(255, 165, 0)';
-            game.fill();
-            game.closePath();
-          
-            for (let i = 1; i <= ball.speed && ball.speed > 10; i++) {
-                game.beginPath();
-                let radius = Math.abs(ball.rad - i);
-                game.arc(ball.x - ball.dx * i * 2, ball.y - ball.dy * i * 2, radius, 0, Math.PI * 2);
-                game.fillStyle = `rgba(255, 165, 50, ${(0.3 - i * ball.speed / 1000)})`;
-                game.shadowBlur = -10;
-                game.fill();
-                game.closePath();
+    try{
+        fetch("http://localhost:8000/")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
-
-            leftPaddle = data.left_paddle;
-            drawStyledPaddle(leftPaddle.x + 10, leftPaddle.y, leftPaddle.width, leftPaddle.height, ['#3498db', '#2980b9']);
-            
-            rightPaddle = data.right_paddle;
-            drawStyledPaddle(rightPaddle.x - 10, rightPaddle.y, rightPaddle.width, rightPaddle.height, ['#e74c3c', '#c0392b']);
-            score = data.score;
+            return response.json();
+        })
+        .then(data => {
+            if (data){
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.ImageSmoothingEnabled = true;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.lineWidth = 5;
+                ctx.strokeRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = 'rgb(254, 167, 10, 0.8)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.clearRect(0, 10, canvas.width, canvas.height - 20);
+                
+                ball = data.ball;
+                ctx.beginPath();
+                ctx.arc(ball.x, ball.y, ball.rad, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 165, 0)';
+                ctx.fill();
+                ctx.closePath();
+                
+                for (let i = 1; i <= ball.speed && ball.speed > 10; i++) {
+                ctx.beginPath();
+                let radius = Math.abs(ball.rad - i);
+                ctx.arc(ball.x - ball.dx * i * 2, ball.y - ball.dy * i * 2, radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 165, 50, ${(0.3 - i * ball.speed / 1000)})`;
+                ctx.shadowBlur = -10;
+                ctx.fill();
+                ctx.closePath();
+                }
+                leftPaddle = data.left_paddle;
+                drawStyledPaddle(leftPaddle.x + 10, leftPaddle.y, leftPaddle.width, leftPaddle.height, ['#3498db', '#2980b9']);
+                
+                rightPaddle = data.right_paddle;
+                drawStyledPaddle(rightPaddle.x - 10, rightPaddle.y, rightPaddle.width, rightPaddle.height, ['#e74c3c', '#c0392b']);
+                score = data.score;
+            }
+            else {
+                throw new Error('No data received');
+            }
         });
+    }
+    catch (error){
+        console.error('Error fetching game state:', error);
+    }
 }
