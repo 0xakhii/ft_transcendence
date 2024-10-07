@@ -59,8 +59,8 @@ function animateBackground(ballX, ballY) {
     stars.forEach(star => {
         star.update(ballX , ballY);
         star.draw();
-        star.speedX += 0.0001;
-        star.speedY += 0.0001;
+        // star.speedX += 0.0001;
+        // star.speedY += 0.0001;
     });
     requestAnimationFrame(() => animateBackground(ball.x, ball.y));
 }

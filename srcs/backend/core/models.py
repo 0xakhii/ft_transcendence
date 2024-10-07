@@ -4,8 +4,8 @@
 import random
 
 
-canvasWidth = 800
-canvasHeight = 600
+canvasWidth = 0
+canvasHeight = 0
 
 class Paddle:
     def __init__(self, x, y, width=25, height=150, dy=5, color='#3498db'):

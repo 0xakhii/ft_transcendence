@@ -293,15 +293,19 @@ function gameOver(){
 }
 
 let lastRequestTime = 0;
+let flag = 0
 function makeRequest() {
     const now = Date.now();
     if (now - lastRequestTime > 1000) {  // One request per second
+        if (flag === 0){
+            sendWinSize();
+            flag = 1;
+        }
         fetchGameState();
         lastRequestTime = now;
     }
 }
 function gameLoop(){
-    // setInterval(fetchGameState, 100);
     makeRequest();
     // if (gamePaused)
     //     return;
@@ -391,6 +395,16 @@ function keyUpHandler(event) {
 }
 
 gameLoop();
+
+function sendWinSize(){
+    fetch('http://localhost:8000/win/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ canvasWidth: canvas.width, canvasHeight: canvas.height })
+    });
+}
 
 function fetchGameState() {
     try{
