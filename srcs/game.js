@@ -100,15 +100,15 @@ function drawStyledPaddle(x, y, width, height, colors) {
     ctx.lineTo(x, y + 10);
     ctx.quadraticCurveTo(x, y, x + 10, y);
     ctx.closePath();
-    if (leftPaddle.ballTouchedPaddle || rightPaddle.ballTouchedPaddle) {
-        if (leftPaddle.ballTouchedPaddle)
-            ctx.shadowColor = leftPaddle.color;
-        else
-            ctx.shadowColor = rightPaddle.color;
-        ctx.shadowBlur = 50;
-        ctx.shadowOffsetX = 0;
-        ctx.shadowOffsetY = 0;
-    }
+    // if (leftPaddle.ballTouchedPaddle || rightPaddle.ballTouchedPaddle) {
+    //     if (leftPaddle.ballTouchedPaddle)
+    //         ctx.shadowColor = leftPaddle.color;
+    //     else
+    //         ctx.shadowColor = rightPaddle.color;
+    //     ctx.shadowBlur = 50;
+    //     ctx.shadowOffsetX = 0;
+    //     ctx.shadowOffsetY = 0;
+    // }
     ctx.fillStyle = gradient;
     ctx.fill();
     
@@ -302,9 +302,7 @@ function makeRequest() {
 }
 function gameLoop(){
     // setInterval(fetchGameState, 100);
-    makeRequest();  // Call the throttling function
-    // Example throttling function
-
+    makeRequest();
     // if (gamePaused)
     //     return;
     // draw();
@@ -396,7 +394,7 @@ gameLoop();
 
 function fetchGameState() {
     try{
-        fetch("http://localhost:8000/")
+        fetch("http://localhost:8000/game/")
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -415,21 +413,23 @@ function fetchGameState() {
                 ctx.clearRect(0, 10, canvas.width, canvas.height - 20);
                 
                 ball = data.ball;
+
                 ctx.beginPath();
                 ctx.arc(ball.x, ball.y, ball.rad, 0, Math.PI * 2);
                 ctx.fillStyle = 'rgba(255, 165, 0)';
                 ctx.fill();
                 ctx.closePath();
+                animateBackground(ball.x, ball.y);
                 
-                for (let i = 1; i <= ball.speed && ball.speed > 10; i++) {
-                ctx.beginPath();
-                let radius = Math.abs(ball.rad - i);
-                ctx.arc(ball.x - ball.dx * i * 2, ball.y - ball.dy * i * 2, radius, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(255, 165, 50, ${(0.3 - i * ball.speed / 1000)})`;
-                ctx.shadowBlur = -10;
-                ctx.fill();
-                ctx.closePath();
-                }
+                // for (let i = 1; i <= ball.speed && ball.speed > 10; i++) {
+                //     ctx.beginPath();
+                //     let radius = Math.abs(ball.rad - i);
+                //     ctx.arc(ball.x - ball.dx * i * 2, ball.y - ball.dy * i * 2, radius, 0, Math.PI * 2);
+                //     ctx.fillStyle = `rgba(255, 165, 50, ${(0.3 - i * ball.speed / 1000)})`;
+                //     ctx.shadowBlur = -10;
+                //     ctx.fill();
+                //     ctx.closePath();
+                // }
                 leftPaddle = data.left_paddle;
                 drawStyledPaddle(leftPaddle.x + 10, leftPaddle.y, leftPaddle.width, leftPaddle.height, ['#3498db', '#2980b9']);
                 

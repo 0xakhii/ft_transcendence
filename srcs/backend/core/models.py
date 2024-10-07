@@ -26,8 +26,8 @@ class Ball:
         self.dy = dy
         self.speed = speed
 
-left_paddle = Paddle(0, canvasHeight // 2 - 75)
-right_paddle = Paddle(canvasWidth - 25, canvasHeight // 2 - 75, color='#e74c3c')
+left_paddle = Paddle(0, canvasHeight // 2)
+right_paddle = Paddle(canvasWidth - 25, canvasHeight // 2, color='#e74c3c')
 ball = Ball(canvasWidth // 2, canvasHeight // 2)
 
 score = {'left': 0, 'right': 0}

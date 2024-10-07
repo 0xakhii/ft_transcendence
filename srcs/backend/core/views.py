@@ -23,7 +23,6 @@ def home(request):
 @api_view(['GET'])
 def game_state(request):
     game = init()
-    print("Game state requested", request.GET)
     # game.ball_move(game.ball)
     # game.ball_wall_collision(game.ball)
     # game.ball_paddle_collision(game.ball, game.left_paddle, game.right_paddle)

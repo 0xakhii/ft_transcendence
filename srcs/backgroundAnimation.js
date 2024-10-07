@@ -64,5 +64,3 @@ function animateBackground(ballX, ballY) {
     });
     requestAnimationFrame(() => animateBackground(ball.x, ball.y));
 }
-
-// animateBackground(ball.x, ball.y);
