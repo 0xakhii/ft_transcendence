@@ -1,8 +1,8 @@
 const bgCanvas = document.createElement('canvas');
 const bgCtx = bgCanvas.getContext('2d');
 
-bgCanvas.width = window.innerWidth;
-bgCanvas.height = window.innerHeight;
+bgCanvas.width = canvas.width;
+bgCanvas.height = canvas.height;
 bgCanvas.style.position = 'fixed';
 bgCanvas.style.top = '0';
 bgCanvas.style.left = '0';
@@ -15,9 +15,10 @@ class Star {
     constructor() {
         this.x = Math.random() * bgCanvas.width ? Math.random() * bgCanvas.width : 0;
         this.y = Math.random() * bgCanvas.height ? Math.random() * bgCanvas.height : 0;
-        this.size = Math.random() * 2 ? Math.random() * 4 : 4;
-        this.speedX = Math.random() * 0.2 ? Math.random() * 0.5 : 0.5;
-        this.speedY = Math.random() * 0.2 ? Math.random() * 0.5 : 0.5;
+        this.size = Math.random() * 2 ? Math.random() * 3.5 : 3.5;
+        this.speedX = Math.random() * 0.2 ? Math.random() * 0.2 : 0.2;
+        this.speedY = Math.random() * 0.2 ? Math.random() * 0.2 : 0.2;
+        this.speed = 5;
     }
 
     update(ballX, ballY) {
@@ -48,7 +49,7 @@ class Star {
 }
 
 const stars = [];
-for (let i = 0; i < 1500; i++) {
+for (let i = 0; i < 1000; i++) {
     stars.push(new Star());
 }
 
@@ -59,8 +60,18 @@ function animateBackground(ballX, ballY) {
     stars.forEach(star => {
         star.update(ballX , ballY);
         star.draw();
-        // star.speedX += 0.0001;
-        // star.speedY += 0.0001;
+        star.speedX += 0.001;
+        star.speedY += 0.001;
+        for (let i = 1; i <= stars.speed && stars.speed > 10; i++) {
+            game.beginPath();
+            let radius = Math.abs(stars.rad - i);
+            game.arc(stars.x - stars.speedX * i * 2, stars.y - stars.speedY * i * 2, radius, 0, Math.PI * 2);
+            game.fillStyle = `rgba(255, 165, 50, ${(0.3 - i * stars.speed / 1000)})`;
+            game.shadowBlur = -10;
+            game.fill();
+            game.closePath();
+        }
     });
     requestAnimationFrame(() => animateBackground(ball.x, ball.y));
 }
+animateBackground(ball.x, ball.y)

@@ -1,118 +1,121 @@
 let canvas = document.getElementById('gamecanvas');
-let ctx = canvas.getContext('2d');
+let game = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
-let ball;
-let leftPaddle;
-let rightPaddle;
-let score;
 
-// const ballRad = 15;
-// const paddleHeight = 150;
-// const paddleWidth = 25;
-// let ballTouchedWall = false;
-// const leftPaddle = {
-// 	x: 0,
-// 	y: canvas.height / 2 - paddleHeight / 2,
-// 	width: paddleWidth,
-// 	height: paddleHeight,
-// 	dy: 0,
-//     ballTouchedPaddle: false,
-//     color: '#3498db'
-// };
+const ballRad = 15;
+const paddleHeight = 150;
+const paddleWidth = 25;
+let ballTouchedWall = false;
+const leftPaddle = {
+	x: 0,
+	y: canvas.height / 2 - paddleHeight / 2,
+	width: paddleWidth,
+	height: paddleHeight,
+	dy: 0,
+    ballTouchedPaddle: false,
+    color: '#3498db'
+};
 
-// const rightPaddle = {
-// 	x: canvas.width - paddleWidth,
-// 	y: canvas.height / 2 - paddleHeight / 2,
-// 	width: paddleWidth,
-// 	height: paddleHeight,
-// 	dy: 0,
-//     ballTouchedPaddle: false,
-//     color: '#e74c3c'
-// };
+const rightPaddle = {
+	x: canvas.width - paddleWidth,
+	y: canvas.height / 2 - paddleHeight / 2,
+	width: paddleWidth,
+	height: paddleHeight,
+	dy: 0,
+    ballTouchedPaddle: false,
+    color: '#e74c3c'
+};
 
-// const ball = {
-// 	x: canvas.width / 2,
-// 	y: canvas.height / 2,
-// 	rad: ballRad,
-// 	dy: 0,
-// 	dx: 0,
-//     speed: 5,
-// };
+const ball = {
+	x: canvas.width / 2,
+	y: canvas.height / 2,
+	rad: ballRad,
+	dy: 0,
+	dx: 0,
+    speed: 5,
+};
 
-// function drawBall(game, ball) {
-//     game.beginPath();
-//     game.arc(ball.x, ball.y, ball.rad, 0, Math.PI * 2);
-//     game.fillStyle = 'rgba(255, 165, 0)';
-//     game.fill();
-//     game.closePath();
+function drawBall(game, ball) {
+    game.beginPath();
+    game.arc(ball.x, ball.y, ball.rad, 0, Math.PI * 2);
+    game.fillStyle = 'rgba(255, 165, 0)';
+    game.fill();
+    game.closePath();
   
-//     for (let i = 1; i <= ball.speed && ball.speed > 10; i++) {
-//         game.beginPath();
-//         let radius = Math.abs(ball.rad - i);
-//         game.arc(ball.x - ball.dx * i * 2, ball.y - ball.dy * i * 2, radius, 0, Math.PI * 2);
-//         game.fillStyle = `rgba(255, 165, 50, ${(0.3 - i * ball.speed / 1000)})`;
-//         game.shadowBlur = -10;
-//         game.fill();
-//         game.closePath();
-//     }
-// }
+    for (let i = 1; i <= ball.speed && ball.speed > 10; i++) {
+        game.beginPath();
+        let radius = Math.abs(ball.rad - i);
+        game.arc(ball.x - ball.dx * i * 2, ball.y - ball.dy * i * 2, radius, 0, Math.PI * 2);
+        game.fillStyle = `rgba(255, 165, 50, ${(0.3 - i * ball.speed / 1000)})`;
+        game.shadowBlur = -10;
+        game.fill();
+        game.closePath();
+    }
+}
 
 
-// function draw() {
+function draw() {
+    game.clearRect(0, 0, canvas.width, canvas.height);
+    game.ImageSmoothingEnabled = true;
+    game.clearRect(0, 0, canvas.width, canvas.height);
+    game.lineWidth = 5;
+    game.strokeRect(0, 0, canvas.width, canvas.height);
+    game.fillStyle = 'rgb(254, 167, 10, 0.8)';
+    game.fillRect(0, 0, canvas.width, canvas.height);
+    game.clearRect(0, 10, canvas.width, canvas.height - 20);
+    if (ballTouchedWall) {
+        game.shadowColor = 'rgb(254, 167, 10)';
+        game.shadowBlur = 10;
+        game.shadowOffsetX = 0;
+        game.shadowOffsetY = 0;
+    }
+    leftPaddle.y = Math.max(0, Math.min(leftPaddle.y, canvas.height - leftPaddle.height));
+    rightPaddle.y = Math.max(0, Math.min(rightPaddle.y, canvas.height - rightPaddle.height));
     
-//     if (ballTouchedWall) {
-//         game.shadowColor = 'rgb(254, 167, 10)';
-//         game.shadowBlur = 10;
-//         game.shadowOffsetX = 0;
-//         game.shadowOffsetY = 0;
-//     }
-//     leftPaddle.y = Math.max(0, Math.min(leftPaddle.y, canvas.height - leftPaddle.height));
-//     rightPaddle.y = Math.max(0, Math.min(rightPaddle.y, canvas.height - rightPaddle.height));
-    
-//     game.shadowColor = 'rgba(0, 0, 0, 0.5)';
-//     drawStyledPaddle(leftPaddle.x + 10, leftPaddle.y, leftPaddle.width, leftPaddle.height, ['#3498db', '#2980b9']);
-//     drawStyledPaddle(rightPaddle.x - 10, rightPaddle.y, rightPaddle.width, rightPaddle.height, ['#e74c3c', '#c0392b']);
+    game.shadowColor = 'rgba(0, 0, 0, 0.5)';
+    drawStyledPaddle(leftPaddle.x + 10, leftPaddle.y, leftPaddle.width, leftPaddle.height, ['#3498db', '#2980b9']);
+    drawStyledPaddle(rightPaddle.x - 10, rightPaddle.y, rightPaddle.width, rightPaddle.height, ['#e74c3c', '#c0392b']);
 
-//     drawBall(game, ball);
-// }
+    drawBall(game, ball);
+}
 
 function drawStyledPaddle(x, y, width, height, colors) {
-    ctx.save();
+    game.save();
     
-    let gradient = ctx.createLinearGradient(x, y, x + width, y);
+    let gradient = game.createLinearGradient(x, y, x + width, y);
     gradient.addColorStop(0, colors[0]);
     gradient.addColorStop(1, colors[1]);
     
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-    ctx.shadowBlur = 5;
-    ctx.shadowOffsetX = 5;
-    ctx.shadowOffsetY = 5;
+    game.shadowColor = 'rgba(0, 0, 0, 0.5)';
+    game.shadowBlur = 5;
+    game.shadowOffsetX = 5;
+    game.shadowOffsetY = 5;
     
-    ctx.beginPath();
-    ctx.moveTo(x + 10, y);
-    ctx.lineTo(x + width - 10, y);
-    ctx.quadraticCurveTo(x + width, y, x + width, y + 10);
-    ctx.lineTo(x + width, y + height - 10);
-    ctx.quadraticCurveTo(x + width, y + height, x + width - 10, y + height);
-    ctx.lineTo(x + 10, y + height);
-    ctx.quadraticCurveTo(x, y + height, x, y + height - 10);
-    ctx.lineTo(x, y + 10);
-    ctx.quadraticCurveTo(x, y, x + 10, y);
-    ctx.closePath();
-    // if (leftPaddle.ballTouchedPaddle || rightPaddle.ballTouchedPaddle) {
-    //     if (leftPaddle.ballTouchedPaddle)
-    //         ctx.shadowColor = leftPaddle.color;
-    //     else
-    //         ctx.shadowColor = rightPaddle.color;
-    //     ctx.shadowBlur = 50;
-    //     ctx.shadowOffsetX = 0;
-    //     ctx.shadowOffsetY = 0;
-    // }
-    ctx.fillStyle = gradient;
-    ctx.fill();
+    game.beginPath();
+    game.moveTo(x + 10, y);
+    game.lineTo(x + width - 10, y);
+    game.quadraticCurveTo(x + width, y, x + width, y + 10);
+    game.lineTo(x + width, y + height - 10);
+    game.quadraticCurveTo(x + width, y + height, x + width - 10, y + height);
+    game.lineTo(x + 10, y + height);
+    game.quadraticCurveTo(x, y + height, x, y + height - 10);
+    game.lineTo(x, y + 10);
+    game.quadraticCurveTo(x, y, x + 10, y);
+    game.closePath();
+    if (leftPaddle.ballTouchedPaddle || rightPaddle.ballTouchedPaddle) {
+        if (leftPaddle.ballTouchedPaddle)
+            game.shadowColor = leftPaddle.color;
+        else
+            game.shadowColor = rightPaddle.color;
+        game.shadowBlur = 50;
+        game.shadowOffsetX = 0;
+        game.shadowOffsetY = 0;
+    }
+    game.fillStyle = gradient;
+    game.fill();
     
-    ctx.restore();
+    game.restore();
 }
 
 function update(){
@@ -122,28 +125,28 @@ function update(){
 	ball.y += ball.dy;
 }
 
-// function resetBall(){
-//     ball.x = canvas.width / 2;
-//     ball.y = canvas.height / 2;
-//     ball.dx = 0;
-//     ball.dy = 0;
-//     ball.speed = 5;
-// }
+function resetBall(){
+    ball.x = canvas.width / 2;
+    ball.y = canvas.height / 2;
+    ball.dx = 0;
+    ball.dy = 0;
+    ball.speed = 5;
+}
 
-// function ballMove(){
-//     if (Math.random() < 0.5){
-//         ball.dx = 2.5;
-//         ball.dy = 2.5;
-//     }
-//     else{
-//         ball.dx = -2.5;
-//         ball.dy = -2.5;
-//     }
-// }
-// let score = {
-//     right: 0,
-//     left: 0
-// };
+function ballMove(){
+    if (Math.random() < 0.5){
+        ball.dx = 2.5;
+        ball.dy = 2.5;
+    }
+    else{
+        ball.dx = -2.5;
+        ball.dy = -2.5;
+    }
+}
+let score = {
+    right: 0,
+    left: 0
+};
 
 function RestartButton(){
     const restartButton = document.createElement('button');
@@ -184,10 +187,10 @@ function PrintTimer(timer, color){
     const countdownHeight = 100;
     const clearX = canvas.width / 2 - countdownWidth / 2;
     const clearY = canvas.height / 2 - countdownHeight / 2;
-    ctx.clearRect(clearX, clearY, countdownWidth, countdownHeight);
-    ctx.fillStyle = color;
-    ctx.font = '50px "Press Start 2P"';
-    ctx.fillText(timer, canvas.width / 2, canvas.height / 2 + 5);
+    game.clearRect(clearX, clearY, countdownWidth, countdownHeight);
+    game.fillStyle = color;
+    game.font = '50px "Press Start 2P"';
+    game.fillText(timer, canvas.width / 2, canvas.height / 2 + 5);
 }
 
 let countdownTimerId;
@@ -201,8 +204,8 @@ function countdown(seconds, color, resetBall) {
         clearTimeout(countdownTimerId);
     const countdownTimer = () => {
         countdownTimerId = setTimeout(() => {
-            ctx.fillStyle = color;
-            ctx.font = '75px "Press Start 2P"';
+            game.fillStyle = color;
+            game.font = '75px "Press Start 2P"';
             PrintTimer(timer, color);
             timer--;
             if (timer >= 0) {
@@ -220,55 +223,55 @@ function countdown(seconds, color, resetBall) {
     countdownTimer();
 }
 
-// function ballWallCollision() {
-//     if (ball.y + ball.rad > canvas.height || ball.y - ball.rad < 0) {
-//         ball.dy = -ball.dy;
-//         ballTouchedWall = true;
-//     }
-//     if (ball.x + ball.rad > canvas.width || ball.x - ball.rad < 0) {
-//         if (ball.x + ball.rad > canvas.width) {
-//             score.left++;
-//             if (score.left != 11)
-//                 countdown(3, '#2980b9', resetBall);
-//         } else {
-//             score.right++;
-//             if (score.right != 11)
-//                 countdown(3, '#c0392b', resetBall);
-//         }
-//         resetBall();
-//         return;
-//     }
-//     update();
-// }
+function ballWallCollision() {
+    if (ball.y + ball.rad > canvas.height || ball.y - ball.rad < 0) {
+        ball.dy = -ball.dy;
+        ballTouchedWall = true;
+    }
+    if (ball.x + ball.rad > canvas.width || ball.x - ball.rad < 0) {
+        if (ball.x + ball.rad > canvas.width) {
+            score.left++;
+            if (score.left != 11)
+                countdown(3, '#2980b9', resetBall);
+        } else {
+            score.right++;
+            if (score.right != 11)
+                countdown(3, '#c0392b', resetBall);
+        }
+        resetBall();
+        return;
+    }
+    update();
+}
 
 
-// function ballPaddleCollision() {
-//     if (ball.x - ball.rad < leftPaddle.x + leftPaddle.width &&
-//         ball.y + ball.rad > leftPaddle.y &&
-//         ball.y - ball.rad < leftPaddle.y + leftPaddle.height &&
-//         ball.dx < 0) {
-//         ball.dx = -ball.dx + (Math.random() * 0.5);
-//         leftPaddle.ballTouchedPaddle = true;
-//     }
-//     else if (ball.x + ball.rad > rightPaddle.x &&
-//              ball.y + ball.rad > rightPaddle.y &&
-//              ball.y - ball.rad < rightPaddle.y + rightPaddle.height &&
-//              ball.dx > 0) {
-//         ball.dx = -ball.dx - (Math.random() * 0.5);
-//         rightPaddle.ballTouchedPaddle = true;
-//     }
-//     ball.speed += 0.01;
-//     update();
-// }
+function ballPaddleCollision() {
+    if (ball.x - ball.rad < leftPaddle.x + leftPaddle.width &&
+        ball.y + ball.rad > leftPaddle.y &&
+        ball.y - ball.rad < leftPaddle.y + leftPaddle.height &&
+        ball.dx < 0) {
+        ball.dx = -ball.dx + (Math.random() * 0.5);
+        leftPaddle.ballTouchedPaddle = true;
+    }
+    else if (ball.x + ball.rad > rightPaddle.x &&
+             ball.y + ball.rad > rightPaddle.y &&
+             ball.y - ball.rad < rightPaddle.y + rightPaddle.height &&
+             ball.dx > 0) {
+        ball.dx = -ball.dx - (Math.random() * 0.5);
+        rightPaddle.ballTouchedPaddle = true;
+    }
+    ball.speed += 0.01;
+    update();
+}
 
 
 function scoreDisplay() {
     document.fonts.load('75px "Press Start 2P"').then(function () {
-        ctx.fillStyle = '#2980b9';
-        ctx.font = '75px "Press Start 2P"';
-        ctx.fillText(score.left, canvas.width / 2 - 160, 150);
-        ctx.fillStyle = '#c0392b';
-        ctx.fillText(score.right, canvas.width / 2 + 60, 150);
+        game.fillStyle = '#2980b9';
+        game.font = '75px "Press Start 2P"';
+        game.fillText(score.left, canvas.width / 2 - 160, 150);
+        game.fillStyle = '#c0392b';
+        game.fillText(score.right, canvas.width / 2 + 60, 150);
     }).catch(function (error) {
         console.error('Font could not be loaded', error);
     });
@@ -278,13 +281,13 @@ function gameOver(){
     scoreDisplay();
     if (score.left === 11 || score.right === 11) {
         if (score.left === 11) {
-            ctx.fillStyle = '#2980b9';
-            ctx.fillText('Player 1 won', canvas.width / 2 - 300, canvas.height / 2);
+            game.fillStyle = '#2980b9';
+            game.fillText('Player 1 won', canvas.width / 2 - 300, canvas.height / 2);
             return 1;
         }
         if (score.right === 11) {
-            ctx.fillStyle = '#c0392b';
-            ctx.fillText('Player 2 won', canvas.width / 2 - 300, canvas.height / 2);
+            game.fillStyle = '#c0392b';
+            game.fillText('Player 2 won', canvas.width / 2 - 300, canvas.height / 2);
             return 1;
         }
         resetBall();
@@ -298,7 +301,6 @@ function makeRequest() {
     const now = Date.now();
     if (now - lastRequestTime > 1000) {  // One request per second
         if (flag === 0){
-            sendWinSize();
             flag = 1;
         }
         fetchGameState();
@@ -306,30 +308,31 @@ function makeRequest() {
     }
 }
 function gameLoop(){
-    makeRequest();
-    // if (gamePaused)
-    //     return;
-    // draw();
-    // ballTouchedWall = false;
-    // leftPaddle.ballTouchedPaddle = false;
-    // rightPaddle.ballTouchedPaddle = false;
-    // ballWallCollision();
-    // ballPaddleCollision();
-    // if (ball.dx === 0 && ball.dy === 0) {
-    //     ballMove();
-    // }
-    // if (score.left === 5 || score.right === 5) {
-    //     if (score.left === 5)
-    //         leftPaddle.height = 50;
-    //     else
-    //         rightPaddle.height = 50;
-    // }
-    // if (gameOver() === 1 && (score.left === 11 || score.right === 11)) {
-    //     RestartButton();
-    //     return 0;
-    // }
+    // makeRequest();
+    if (gamePaused)
+        return;
+    update();
+    draw();
+    ballTouchedWall = false;
+    leftPaddle.ballTouchedPaddle = false;
+    rightPaddle.ballTouchedPaddle = false;
+    ballWallCollision();
+    ballPaddleCollision();
+    if (ball.dx === 0 && ball.dy === 0) {
+        ballMove();
+    }
+    if (score.left === 5 || score.right === 5) {
+        if (score.left === 5)
+            leftPaddle.height = 50;
+        else
+            rightPaddle.height = 50;
+    }
+    if (gameOver() === 1 && (score.left === 11 || score.right === 11)) {
+        RestartButton();
+        return 0;
+    }
     requestAnimationFrame(gameLoop);
-    // update();
+    update();
 }
 
 document.addEventListener('keydown', keyDownHandler);
@@ -349,6 +352,11 @@ function keyDownHandler(event) {
         //     },
         //     body: JSON.stringify({ direction: 'up' })
         // });
+        rightPaddle.dy = -5;
+        if (rightPaddle.y + rightPaddle.dy < 0) {
+            rightPaddle.y = 0;
+            rightPaddle.dy = 0;
+        }
     } else if (event.key === 'ArrowDown') {
         // rightPaddle.dy = 5;
         // if (rightPaddle.y + rightPaddle.height + rightPaddle.dy > canvas.height) {
@@ -362,20 +370,25 @@ function keyDownHandler(event) {
         //     },
         //     body: JSON.stringify({ direction: 'down' })
         // });
+        rightPaddle.dy = 5;
+        if (rightPaddle.y + rightPaddle.height + rightPaddle.dy > canvas.height) {
+            rightPaddle.y = canvas.height - rightPaddle.height;
+            rightPaddle.dy = 0;
+        }
     }
-    // if (event.key === 'w') {
-    //     leftPaddle.dy = -5;
-    //     if (leftPaddle.y + leftPaddle.dy < 0) {
-    //         leftPaddle.y = 0;
-    //         leftPaddle.dy = 0;
-    //     }
-    // } else if (event.key === 's') {
-    //     leftPaddle.dy = 5;
-    //     if (leftPaddle.y + leftPaddle.height + leftPaddle.dy > canvas.height) {
-    //         leftPaddle.y = canvas.height - leftPaddle.height;
-    //         leftPaddle.dy = 0;
-    //     }
-    // }
+    if (event.key === 'w') {
+        leftPaddle.dy = -5;
+        if (leftPaddle.y + leftPaddle.dy < 0) {
+            leftPaddle.y = 0;
+            leftPaddle.dy = 0;
+        }
+    } else if (event.key === 's') {
+        leftPaddle.dy = 5;
+        if (leftPaddle.y + leftPaddle.height + leftPaddle.dy > canvas.height) {
+            leftPaddle.y = canvas.height - leftPaddle.height;
+            leftPaddle.dy = 0;
+        }
+    }
 }
 
 
@@ -388,7 +401,7 @@ function keyUpHandler(event) {
         //     },
         //     body: JSON.stringify({ direction: 'stop' })
         // });
-        // rightPaddle.dy = 0;
+        rightPaddle.dy = 0;
     }
     if (event.key === 'w' || event.key === 's')
         leftPaddle.dy = 0;
@@ -403,7 +416,9 @@ function sendWinSize(){
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({ canvasWidth: canvas.width, canvasHeight: canvas.height })
-    });
+    })
+    .then(response => response.json()
+    .then(data => console.log(data)))
 }
 
 function fetchGameState() {
@@ -417,33 +432,33 @@ function fetchGameState() {
         })
         .then(data => {
             if (data){
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.ImageSmoothingEnabled = true;
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.lineWidth = 5;
-                ctx.strokeRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = 'rgb(254, 167, 10, 0.8)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.clearRect(0, 10, canvas.width, canvas.height - 20);
+                console.log(data);
+                game.clearRect(0, 0, canvas.width, canvas.height);
+                game.ImageSmoothingEnabled = true;
+                game.clearRect(0, 0, canvas.width, canvas.height);
+                game.lineWidth = 5;
+                game.strokeRect(0, 0, canvas.width, canvas.height);
+                game.fillStyle = 'rgb(254, 167, 10, 0.8)';
+                game.fillRect(0, 0, canvas.width, canvas.height);
+                game.clearRect(0, 10, canvas.width, canvas.height - 20);
                 
                 ball = data.ball;
 
-                ctx.beginPath();
-                ctx.arc(ball.x, ball.y, ball.rad, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255, 165, 0)';
-                ctx.fill();
-                ctx.closePath();
-                animateBackground(ball.x, ball.y);
+                game.beginPath();
+                game.arc(ball.x, ball.y, ball.rad, 0, Math.PI * 2);
+                game.fillStyle = 'rgba(255, 165, 0)';
+                game.fill();
+                game.closePath();
                 
-                // for (let i = 1; i <= ball.speed && ball.speed > 10; i++) {
-                //     ctx.beginPath();
-                //     let radius = Math.abs(ball.rad - i);
-                //     ctx.arc(ball.x - ball.dx * i * 2, ball.y - ball.dy * i * 2, radius, 0, Math.PI * 2);
-                //     ctx.fillStyle = `rgba(255, 165, 50, ${(0.3 - i * ball.speed / 1000)})`;
-                //     ctx.shadowBlur = -10;
-                //     ctx.fill();
-                //     ctx.closePath();
-                // }
+                for (let i = 1; i <= ball.speed && ball.speed > 10; i++) {
+                    game.beginPath();
+                    let radius = Math.abs(ball.rad - i);
+                    game.arc(ball.x - ball.dx * i * 2, ball.y - ball.dy * i * 2, radius, 0, Math.PI * 2);
+                    game.fillStyle = `rgba(255, 165, 50, ${(0.3 - i * ball.speed / 1000)})`;
+                    game.shadowBlur = -10;
+                    game.fill();
+                    game.closePath();
+                }
                 leftPaddle = data.left_paddle;
                 drawStyledPaddle(leftPaddle.x + 10, leftPaddle.y, leftPaddle.width, leftPaddle.height, ['#3498db', '#2980b9']);
                 

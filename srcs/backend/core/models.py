@@ -2,13 +2,11 @@
 
 # Create your models here.
 import random
+from .const import canvasWidth, canvasHeight
 
-
-canvasWidth = 0
-canvasHeight = 0
 
 class Paddle:
-    def __init__(self, x, y, width=25, height=150, dy=5, color='#3498db'):
+    def __init__(self, x, y, width=25, height=150, dy=0, color='#3498db'):
         self.x = x
         self.y = y
         self.width = width
@@ -26,8 +24,8 @@ class Ball:
         self.dy = dy
         self.speed = speed
 
-left_paddle = Paddle(0, canvasHeight // 2)
-right_paddle = Paddle(canvasWidth - 25, canvasHeight // 2, color='#e74c3c')
+left_paddle = Paddle(0, canvasHeight // 2 - 150 // 2)
+right_paddle = Paddle(canvasWidth - 25, canvasHeight // 2 - 150 // 2, color='#e74c3c')
 ball = Ball(canvasWidth // 2, canvasHeight // 2)
 
 score = {'left': 0, 'right': 0}
