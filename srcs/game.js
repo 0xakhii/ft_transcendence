@@ -223,6 +223,10 @@ function countdown(seconds, color, resetBall) {
     countdownTimer();
 }
 
+window.addEventListener("resize", function() {
+    canvas.width = this.innerWidth, canvas.height = this.innerHeight, gameLoop();
+});
+
 function ballWallCollision() {
     if (ball.y + ball.rad > canvas.height || ball.y - ball.rad < 0) {
         ball.dy = -ball.dy;
@@ -320,12 +324,6 @@ function gameLoop(){
     ballPaddleCollision();
     if (ball.dx === 0 && ball.dy === 0) {
         ballMove();
-    }
-    if (score.left === 5 || score.right === 5) {
-        if (score.left === 5)
-            leftPaddle.height = 50;
-        else
-            rightPaddle.height = 50;
     }
     if (gameOver() === 1 && (score.left === 11 || score.right === 11)) {
         RestartButton();
