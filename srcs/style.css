@@ -110,10 +110,8 @@ body {
 }
 
 .three-canvas{
-  width: 50%;
-  height: auto;
   margin: 0 auto;
   display: block;
   float: center;
-  transform: translateY(30%);
+  transform: translateY(20%);
 }

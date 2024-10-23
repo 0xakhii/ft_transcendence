@@ -338,11 +338,6 @@ document.addEventListener('keyup', keyUpHandler);
 
 function keyDownHandler(event) {
     if (event.key === 'ArrowUp') {
-        // rightPaddle.dy = -5;
-        // if (rightPaddle.y + rightPaddle.dy < 0) {
-        //     rightPaddle.y = 0;
-        //     rightPaddle.dy = 0;
-        // }
         // fetch('http://localhost:8000', {
         //     method: 'POST',
         //     headers: {
