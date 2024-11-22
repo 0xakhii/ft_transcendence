@@ -13,8 +13,8 @@ import random
 
 def ball_move(ball):
 	print("ball_move")
-	# ball.dx = random.choice([-1, 1])
-	# ball.dy = random.choice([-1, 1])
+	ball['dx'] = random.choice([-1, 1])
+	ball['dy'] = random.choice([-1, 1])
 
 def init(left_paddle, right_paddle, ball):
 	print("init")

@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG")
+DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -142,7 +142,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+LOGGING = {
+    "version": 1,  # the dictConfig format version
+    "disable_existing_loggers": False,  # retain the default loggers
+}
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
