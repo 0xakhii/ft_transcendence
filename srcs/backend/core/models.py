@@ -18,5 +18,5 @@ def ball_move(ball):
 
 def init(left_paddle, right_paddle, ball):
 	print("init")
-	# if (ball.dx == 0 and ball.dy == 0):
-	ball_move(ball)
+	if (ball.dx == 0 and ball.dy == 0):
+		ball_move(ball)
