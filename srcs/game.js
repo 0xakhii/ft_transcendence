@@ -7,7 +7,7 @@ const ballRad = 15;
 const paddleHeight = 150;
 const paddleWidth = 25;
 let ballTouchedWall = false;
-const leftPaddle = {
+let leftPaddle = {
 	x: 0,
 	y: canvas.height / 2 - paddleHeight / 2,
 	width: paddleWidth,
@@ -17,7 +17,7 @@ const leftPaddle = {
     color: '#3498db'
 };
 
-const rightPaddle = {
+let rightPaddle = {
 	x: canvas.width - paddleWidth,
 	y: canvas.height / 2 - paddleHeight / 2,
 	width: paddleWidth,
@@ -27,7 +27,7 @@ const rightPaddle = {
     color: '#e74c3c'
 };
 
-const ball = {
+let ball = {
 	x: canvas.width / 2,
 	y: canvas.height / 2,
 	rad: ballRad,
@@ -312,25 +312,25 @@ function makeRequest() {
     }
 }
 function gameLoop(){
-    // makeRequest();
     if (gamePaused)
         return;
-    update();
     draw();
+    update();
     ballTouchedWall = false;
     leftPaddle.ballTouchedPaddle = false;
     rightPaddle.ballTouchedPaddle = false;
+    makeRequest();
     ballWallCollision();
     ballPaddleCollision();
-    if (ball.dx === 0 && ball.dy === 0) {
-        ballMove();
-    }
-    if (gameOver() === 1 && (score.left === 11 || score.right === 11)) {
-        RestartButton();
-        return 0;
-    }
-    requestAnimationFrame(gameLoop);
-    update();
+    // if (ball.dx === -1 && ball.dy === -1) {
+    //     ballMove();
+    // }
+    // if (gameOver() === 1 && (score.left === 11 || score.right === 11)) {
+    //     RestartButton();
+    //     return 0;
+    // }
+    // requestAnimationFrame(gameLoop);
+    // update();
 }
 
 document.addEventListener('keydown', keyDownHandler);
@@ -402,68 +402,77 @@ function keyUpHandler(event) {
 
 gameLoop();
 
-function sendWinSize(){
-    fetch('http://localhost:8000/win/', {
+// function sendWinSize(){
+//     fetch('http://localhost:8000/win/', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json'
+//         },
+//         body: JSON.stringify({ canvasWidth: canvas.width, canvasHeight: canvas.height })
+//     })
+//     .then(response => response.json()
+//     .then(data => console.log(data)))
+// }
+
+function fetchGameState() {
+    try{
+        // fetch("http://localhost:8000/game/")
+        // .then(response => {
+        //     if (!response.ok) {
+        //         throw new Error('Network response was not ok');
+        //     }
+        //     return response.json();
+        // })
+        // .then(data => {
+        //     if (data){
+                // console.log(data);
+                // game.clearRect(0, 0, canvas.width, canvas.height);
+                // game.ImageSmoothingEnabled = true;
+                // game.clearRect(0, 0, canvas.width, canvas.height);
+                // game.lineWidth = 5;
+                // game.strokeRect(0, 0, canvas.width, canvas.height);
+                // game.fillStyle = 'rgb(254, 167, 10, 0.8)';
+                // game.fillRect(0, 0, canvas.width, canvas.height);
+                // game.clearRect(0, 10, canvas.width, canvas.height - 20);
+                
+                // ball = data.ball;
+
+                // game.beginPath();
+                // game.arc(ball.x, ball.y, ball.rad, 0, Math.PI * 2);
+                // game.fillStyle = 'rgba(255, 165, 0)';
+                // game.fill();
+                // game.closePath();
+                
+                // for (let i = 1; i <= ball.speed && ball.speed > 10; i++) {
+                //     game.beginPath();
+                //     let radius = Math.abs(ball.rad - i);
+                //     game.arc(ball.x - ball.dx * i * 2, ball.y - ball.dy * i * 2, radius, 0, Math.PI * 2);
+                //     game.fillStyle = `rgba(255, 165, 50, ${(0.3 - i * ball.speed / 1000)})`;
+                //     game.shadowBlur = -10;
+                //     game.fill();
+                //     game.closePath();
+                // }
+                // leftPaddle = data.left_paddle;
+                // drawStyledPaddle(leftPaddle.x + 10, leftPaddle.y, leftPaddle.width, leftPaddle.height, ['#3498db', '#2980b9']);
+                
+                // rightPaddle = data.right_paddle;
+                // drawStyledPaddle(rightPaddle.x - 10, rightPaddle.y, rightPaddle.width, rightPaddle.height, ['#e74c3c', '#c0392b']);
+                // score = data.score;
+    //         }
+    //         else {
+    //             throw new Error('No data received');
+    //         }
+    //     });
+        fetch('http://localhost:8000/game/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ canvasWidth: canvas.width, canvasHeight: canvas.height })
+        body: JSON.stringify({ leftPaddle: leftPaddle, rightPaddle: rightPaddle, ball: ball})
     })
     .then(response => response.json()
-    .then(data => console.log(data)))
+    .then(data => console.log(data)))    
 }
-
-function fetchGameState() {
-    try{
-        fetch("http://localhost:8000/game/")
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data){
-                console.log(data);
-                game.clearRect(0, 0, canvas.width, canvas.height);
-                game.ImageSmoothingEnabled = true;
-                game.clearRect(0, 0, canvas.width, canvas.height);
-                game.lineWidth = 5;
-                game.strokeRect(0, 0, canvas.width, canvas.height);
-                game.fillStyle = 'rgb(254, 167, 10, 0.8)';
-                game.fillRect(0, 0, canvas.width, canvas.height);
-                game.clearRect(0, 10, canvas.width, canvas.height - 20);
-                
-                ball = data.ball;
-
-                game.beginPath();
-                game.arc(ball.x, ball.y, ball.rad, 0, Math.PI * 2);
-                game.fillStyle = 'rgba(255, 165, 0)';
-                game.fill();
-                game.closePath();
-                
-                for (let i = 1; i <= ball.speed && ball.speed > 10; i++) {
-                    game.beginPath();
-                    let radius = Math.abs(ball.rad - i);
-                    game.arc(ball.x - ball.dx * i * 2, ball.y - ball.dy * i * 2, radius, 0, Math.PI * 2);
-                    game.fillStyle = `rgba(255, 165, 50, ${(0.3 - i * ball.speed / 1000)})`;
-                    game.shadowBlur = -10;
-                    game.fill();
-                    game.closePath();
-                }
-                leftPaddle = data.left_paddle;
-                drawStyledPaddle(leftPaddle.x + 10, leftPaddle.y, leftPaddle.width, leftPaddle.height, ['#3498db', '#2980b9']);
-                
-                rightPaddle = data.right_paddle;
-                drawStyledPaddle(rightPaddle.x - 10, rightPaddle.y, rightPaddle.width, rightPaddle.height, ['#e74c3c', '#c0392b']);
-                score = data.score;
-            }
-            else {
-                throw new Error('No data received');
-            }
-        });
-    }
     catch (error){
         console.error('Error fetching game state:', error);
     }

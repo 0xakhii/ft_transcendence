@@ -13,8 +13,6 @@ services:
       - "3000:3000"
     depends_on:
       - db
-    volumes:
-      - ./:/ft_transcendence
     restart: on-failure
     env_file:
       - .env
