@@ -17,6 +17,8 @@ def game_state(request):
         right_paddle = data.get('rightPaddle')
         ball = data.get('ball')
         logger.debug('POST SUCCESS')
+        ball['dx'] = 2
+        ball['dy'] = 2
         init(left_paddle, right_paddle, ball)
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'error'}, status=400)

@@ -13,3 +13,5 @@
 
 def init(left_paddle, right_paddle, ball):
 	print("init")
+	ball['dx'] = 2
+	ball['dy'] = 2
