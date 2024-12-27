@@ -319,18 +319,18 @@ function gameLoop(){
     ballTouchedWall = false;
     leftPaddle.ballTouchedPaddle = false;
     rightPaddle.ballTouchedPaddle = false;
-    makeRequest();
+    // makeRequest();
     ballWallCollision();
     ballPaddleCollision();
-    // if (ball.dx === -1 && ball.dy === -1) {
-    //     ballMove();
-    // }
-    // if (gameOver() === 1 && (score.left === 11 || score.right === 11)) {
-    //     RestartButton();
-    //     return 0;
-    // }
-    // requestAnimationFrame(gameLoop);
-    // update();
+    if (ball.dx === 0 && ball.dy === 0) {
+        ballMove();
+    }
+    if (gameOver() === 1 && (score.left === 11 || score.right === 11)) {
+        RestartButton();
+        return 0;
+    }
+    requestAnimationFrame(gameLoop);
+    update();
 }
 
 document.addEventListener('keydown', keyDownHandler);

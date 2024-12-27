@@ -15,16 +15,12 @@ let cube;
 let icosphere;
 let frontPaddle;
 let backPaddle;
+let model;
 
 const loader = new GLTFLoader();
 loader.load('assets/pongv2.2.glb', (gltf) => {
     scene.add(gltf.scene);
-    const importedCamera = gltf.cameras[0];
-    if (importedCamera) {
-        blender_camera = importedCamera;
-        let light = new THREE.AmbientLight(0xffffff, 2);
-        scene.add(light);
-    }
+    model = gltf;
     // cube = scene.getObjectByName("Cube");
     // icosphere = scene.getObjectByName("Icosphere");
     // frontPaddle = scene.getObjectByName("frontPaddle");
@@ -64,6 +60,9 @@ function animate() {
         return;
     }
     else{
+        blender_camera = model.cameras[0];
+        const lights = THREE.ambientlight(0xfffff);
+        scene.add(lights);
         if (blender_camera)
             renderer.render(scene, blender_camera);
         // ballMove();
